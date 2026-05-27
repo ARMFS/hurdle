@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARMFS Terminal</title>
+    <title>IBM Terminal Simulator - UL vs Portfolio</title>
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             /* Classic IBM Blue and Yellow */
@@ -14,6 +16,7 @@
             --highlight: #0000ff;
             --danger: #ff5555;
             --ok: #55ff55;
+            --chart-line2: #55ffff; /* Cyan for the UL line */
         }
 
         body {
@@ -74,6 +77,8 @@
             padding: 15px;
             background: rgba(255, 255, 85, 0.05);
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group {
@@ -207,9 +212,10 @@
         .ledger-container {
             margin-top: 20px;
             overflow-x: auto;
-            max-height: 500px;
+            max-height: 250px; /* Reduced to make room for chart */
             border: 2px solid var(--border);
             background: var(--bg);
+            flex-grow: 1;
         }
 
         .ledger-table {
@@ -271,6 +277,16 @@
         .tax-settings-row span:first-child {
             color: var(--muted);
         }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+            border: 2px solid var(--border);
+            margin-bottom: 20px;
+            background: var(--bg);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
     </style>
 </head>
 <body>
@@ -320,6 +336,10 @@
                 <label>DEP. TERM</label>
                 <input type="number" id="years" value="10" min="1">
             </div>
+            <div class="form-group" style="border-top: 1px dashed var(--muted); padding-top: 8px; margin-top: 8px;">
+                <label style="color: var(--chart-line2);">UL FACE AMT.</label>
+                <input type="number" id="ulFace" value="5000000" step="10000" style="color: var(--chart-line2);">
+            </div>
 
             <h2 style="margin-top: 20px;">[ PF2: ALLOCATION ]</h2>
             
@@ -361,7 +381,7 @@
         </div>
 
         <!-- RIGHT PANEL: OUTPUT & LEDGER -->
-        <div class="panel" style="overflow: hidden; display: flex; flex-direction: column;">
+        <div class="panel" style="overflow: hidden;">
             <h2>[ PF3: SUMMARY AT LIFE EXPECTANCY ]</h2>
             
             <div class="results-summary">
@@ -383,8 +403,13 @@
                 </div>
             </div>
 
-            <h2>[ PF4: FULL LIQUIDATION LEDGER ]</h2>
-            <div class="ledger-container" style="flex-grow: 1;">
+            <h2>[ PF4: PROJECTION CHART ]</h2>
+            <div class="chart-container">
+                <canvas id="projChart"></canvas>
+            </div>
+
+            <h2>[ PF5: FULL LIQUIDATION LEDGER ]</h2>
+            <div class="ledger-container">
                 <table class="ledger-table" id="ledgerTable">
                     <thead>
                         <tr>
@@ -429,6 +454,7 @@
         ];
 
         let taxData = [];
+        let chartInstance = null; // Hold chart instance
 
         // Formatting
         const fCurr = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
@@ -553,6 +579,94 @@
             return taxData.find(d => d.Province === prov && d.Owner === owner);
         }
 
+        function renderChart(labels, netEstateData, ulFaceData) {
+            const ctx = document.getElementById('projChart').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Customize fonts for IBM terminal style
+            Chart.defaults.font.family = '"Courier New", Courier, monospace';
+            Chart.defaults.color = '#ffff55';
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'PORTFOLIO NET TO ESTATE',
+                            data: netEstateData,
+                            borderColor: '#ffff55',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            tension: 0 // straight lines
+                        },
+                        {
+                            label: 'LEVEL UL FACE',
+                            data: ulFaceData,
+                            borderColor: '#55ffff', // Cyan
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            pointHoverRadius: 6,
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: { weight: 'bold' }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,170,0.9)',
+                            titleColor: '#ffff55',
+                            bodyColor: '#ffff55',
+                            borderColor: '#ffff55',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(170, 170, 85, 0.3)', tickColor: 'rgba(170, 170, 85, 0.3)' },
+                            title: { display: true, text: 'AGE', color: '#aaaa55' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(170, 170, 85, 0.3)', tickColor: 'rgba(170, 170, 85, 0.3)' },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + (value / 1000000).toFixed(1) + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function calculate() {
             const allocDcg = parseFloat(document.getElementById('allocDcg').value) || 0;
             const allocRcg = parseFloat(document.getElementById('allocRcg').value) || 0;
@@ -576,6 +690,8 @@
             const le = parseInt(document.getElementById('le').value);
             const deposit = parseFloat(document.getElementById('deposit').value);
             const numDeposits = parseInt(document.getElementById('years').value);
+            const ulFace = parseFloat(document.getElementById('ulFace').value) || 0;
+            
             const prov = document.getElementById('province').value;
             const owner = document.getElementById('owner').value;
             const isCorp = owner === 'Corporate';
@@ -605,6 +721,11 @@
             let finalNetToEstate = 0;
             let finalGrossPortfolio = 0;
             let finalTaxes = 0;
+
+            // Arrays for Chart
+            const chartLabels = [];
+            const chartNetEstate = [];
+            const chartUlFace = [];
 
             for (let y = 1; y <= Math.max(yearsToRun, 1); y++) {
                 let currentAge = age + y;
@@ -669,6 +790,11 @@
                     netEstatePrint = grossPort - personalTax;
                 }
                 
+                // Chart push
+                chartLabels.push(currentAge);
+                chartNetEstate.push(netEstatePrint);
+                chartUlFace.push(ulFace);
+
                 if(y === yearsToRun) {
                     finalNetToEstate = netEstatePrint;
                     finalGrossPortfolio = grossPort;
@@ -704,6 +830,9 @@
             document.getElementById('resGross').innerText = fCurr(finalGrossPortfolio);
             document.getElementById('resTaxes').innerText = fCurr(finalTaxes);
             
+            // Draw Chart
+            renderChart(chartLabels, chartNetEstate, chartUlFace);
+
             // Scroll ledger to target row
             const ledger = document.querySelector('.ledger-container');
             ledger.scrollTop = ledger.scrollHeight;
