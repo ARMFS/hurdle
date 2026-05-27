@@ -6,82 +6,73 @@
     <title>Portfolio & Estate Tax Simulator</title>
     <style>
         :root {
-            --primary: #1e293b;
-            --primary-light: #334155;
-            --accent: #2563eb;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --bg: #ffffff;
+            --fg: #000000;
+            --muted: #555555;
+            --border: #000000;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: "Courier New", Courier, monospace;
             background-color: var(--bg);
-            color: var(--text-main);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
+            color: var(--fg);
+            line-height: 1.5;
+            margin: 0 auto;
+            padding: 2rem;
+            max-width: 1000px;
         }
 
         header {
-            background-color: var(--primary);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            border-bottom: 4px solid var(--accent);
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
         }
 
         header h1 {
-            font-family: 'Merriweather', Georgia, serif;
-            margin: 0;
-            font-size: 2.2rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0 0 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         header p {
-            margin: 0.5rem 0 0 0;
-            color: #cbd5e1;
-            font-size: 1rem;
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .status-bar {
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            background: #f9f9f9;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 3rem;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 800px) {
             .container { grid-template-columns: 1fr; }
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid var(--border);
-        }
-
-        .card h2 {
-            font-family: 'Merriweather', Georgia, serif;
+        h2 {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 0.5rem;
             margin-top: 0;
-            color: var(--primary);
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 0.75rem;
             margin-bottom: 1.5rem;
-            font-size: 1.4rem;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group {
@@ -90,55 +81,29 @@
         }
 
         label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--primary-light);
-            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            color: var(--muted);
         }
 
-        input, select {
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+        input, select, button {
+            font-family: "Courier New", Courier, monospace;
             font-size: 1rem;
-            font-family: inherit;
-            background-color: #fff;
-            transition: border-color 0.2s;
+            padding: 0.4rem;
+            border: 1px solid var(--border);
+            background-color: var(--bg);
+            color: var(--fg);
+            border-radius: 0; /* Remove rounded corners */
+            box-sizing: border-box;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background-color: #f0f0f0;
         }
 
-        .table-container {
-            overflow-x: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            font-weight: 600;
-            color: var(--primary-light);
-            font-size: 0.875rem;
-        }
-
-        td input {
-            width: 80px;
-            padding: 0.5rem;
-        }
-
+        /* Preset Buttons */
         .preset-buttons {
             display: flex;
             gap: 0.5rem;
@@ -147,108 +112,135 @@
         }
 
         button {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text-main);
-            border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
         }
 
         button.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background-color: var(--fg);
+            color: var(--bg);
         }
 
         button:hover:not(.active) {
-            background: #e2e8f0;
+            background-color: #e0e0e0;
         }
 
-        .results-box {
-            background: var(--primary);
-            color: white;
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 1.5rem;
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.5rem;
         }
 
-        .results-box h3 {
-            margin: 0 0 0.5rem 0;
-            font-weight: 400;
-            font-size: 1.1rem;
-            color: #cbd5e1;
+        th, td {
+            padding: 0.5rem 0;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
 
-        .results-box .big-number {
-            font-size: 3rem;
-            font-weight: 700;
-            margin: 0;
-            font-family: 'Merriweather', Georgia, serif;
-            color: #10b981; /* Emerald green */
+        th {
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            font-weight: normal;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
         }
 
-        .summary-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        td input {
+            width: 100%;
+            max-width: 80px;
         }
 
-        .stat-card {
-            background: var(--bg);
-            padding: 1.25rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .stat-card .label {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-card .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
+        .note {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
         }
 
         #alloc-warning {
-            color: #ef4444;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-top: 0.5rem;
+            color: var(--fg);
+            background: var(--border);
+            color: var(--bg);
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            text-transform: uppercase;
             display: none;
         }
 
-        .status-bar {
+        /* Results Display */
+        .results-box {
+            border: 2px solid var(--border);
+            padding: 2rem;
             text-align: center;
-            padding: 0.5rem;
-            font-size: 0.875rem;
-            background: #e0f2fe;
-            color: #0369a1;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .results-box h3 {
+            font-size: 1rem;
+            margin: 0 0 1rem 0;
+            text-transform: uppercase;
+        }
+
+        .results-box .big-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .results-box p {
+            margin: 0.5rem 0 0 0;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+            border-top: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+        }
+
+        .stat-row > div {
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+        }
+
+        .stat-row .label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .stat-row .value {
+            text-align: right;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div id="status" class="status-bar">Loading settings.csv...</div>
+    <div id="status" class="status-bar">[SYSTEM] Initializing...</div>
 
     <header>
         <h1>Estate & Tax Projection Engine</h1>
-        <p>Analyze the Net-to-Estate value across different asset allocation strategies.</p>
+        <p>Asset Allocation & Net-to-Estate Value Simulator</p>
     </header>
 
     <div class="container">
         <!-- LEFT COLUMN: INPUTS -->
-        <div class="card">
-            <h2>Client Profile & Settings</h2>
+        <div>
+            <h2>I. Profile Specifications</h2>
             
             <div class="form-row">
                 <div class="form-group">
@@ -256,7 +248,7 @@
                     <select id="province"></select>
                 </div>
                 <div class="form-group">
-                    <label>Owner Type</label>
+                    <label>Entity Type</label>
                     <select id="owner">
                         <option value="Corporate">Corporate (Holdco)</option>
                         <option value="Personal">Personal</option>
@@ -281,86 +273,90 @@
                     <input type="number" id="deposit" value="100000" step="1000">
                 </div>
                 <div class="form-group">
-                    <label>No. of Deposits (Years)</label>
+                    <label>Deposit Term (Yrs)</label>
                     <input type="number" id="years" value="10" min="1">
                 </div>
             </div>
 
-            <h2>Asset Allocation & Returns</h2>
+            <h2 style="margin-top: 2rem;">II. Asset Allocation</h2>
             
-            <label>Select Preset Portfolio:</label>
             <div class="preset-buttons">
-                <button type="button" class="preset-btn active" data-preset="balanced">Balanced (Default)</button>
-                <button type="button" class="preset-btn" data-preset="sp500">S&P 500 (Total Return)</button>
-                <button type="button" class="preset-btn" data-preset="fixed">Fixed Income</button>
+                <button type="button" class="preset-btn active" data-preset="balanced">[ Balanced ]</button>
+                <button type="button" class="preset-btn" data-preset="sp500">[ S&P 500 ]</button>
+                <button type="button" class="preset-btn" data-preset="fixed">[ Fixed Inc ]</button>
             </div>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Asset Class</th>
-                            <th>Allocation (%)</th>
-                            <th>Target Return (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Deferred Capital Gains<br><small style="color:var(--text-muted)">Total Return Funds</small></td>
-                            <td><input type="number" id="allocDcg" value="34" class="alloc-input"></td>
-                            <td><input type="number" id="rateDcg" value="8" step="0.1" class="rate-input"></td>
-                        </tr>
-                        <tr>
-                            <td>Realized Capital Gains<br><small style="color:var(--text-muted)">Active Trading/Turnover</small></td>
-                            <td><input type="number" id="allocRcg" value="33" class="alloc-input"></td>
-                            <td><input type="number" id="rateRcg" value="10" step="0.1" class="rate-input"></td>
-                        </tr>
-                        <tr>
-                            <td>Fixed Income<br><small style="color:var(--text-muted)">GICs, Bonds, Interest</small></td>
-                            <td><input type="number" id="allocFi" value="33" class="alloc-input"></td>
-                            <td><input type="number" id="rateFi" value="4" step="0.1" class="rate-input"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div id="alloc-warning">⚠️ Total allocation must equal 100%. Currently: <span id="alloc-total">100</span>%</div>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Asset Class</th>
+                        <th>Weight(%)</th>
+                        <th>Target(%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Deferred Cap Gains
+                            <span class="note">Total Return Funds</span>
+                        </td>
+                        <td><input type="number" id="allocDcg" value="34" class="alloc-input"></td>
+                        <td><input type="number" id="rateDcg" value="8" step="0.1" class="rate-input"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Realized Cap Gains
+                            <span class="note">Active Trading</span>
+                        </td>
+                        <td><input type="number" id="allocRcg" value="33" class="alloc-input"></td>
+                        <td><input type="number" id="rateRcg" value="10" step="0.1" class="rate-input"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Fixed Income
+                            <span class="note">GICs, Bonds</span>
+                        </td>
+                        <td><input type="number" id="allocFi" value="33" class="alloc-input"></td>
+                        <td><input type="number" id="rateFi" value="4" step="0.1" class="rate-input"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="alloc-warning">ERROR: Weights must sum to 100%. Current sum = <span id="alloc-total">100</span>%.</div>
         </div>
 
         <!-- RIGHT COLUMN: RESULTS -->
         <div>
-            <div class="card" style="position: sticky; top: 2rem;">
-                <h2>Projection Results</h2>
-                
-                <div class="results-box">
-                    <h3>Final Net Cash to Estate (After All Taxes)</h3>
-                    <p class="big-number" id="resNetEstate">$0</p>
-                    <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #94a3b8;">At Life Expectancy (Age <span id="resAge">86</span>)</p>
-                </div>
+            <h2>III. Output Summary</h2>
+            
+            <div class="results-box">
+                <h3>Final Net Cash to Estate</h3>
+                <p class="big-number" id="resNetEstate">$0</p>
+                <p>After all taxes at Life Expectancy (Age <span id="resAge">86</span>)</p>
+            </div>
 
-                <div class="summary-stats">
-                    <div class="stat-card">
-                        <div class="label">Total Capital Contributed</div>
-                        <div class="value" id="resContributed">$0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Gross Portfolio (Pre-Tax)</div>
-                        <div class="value" id="resGross">$0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Total Estate Taxes Paid</div>
-                        <div class="value" id="resTaxes" style="color: #ef4444;">$0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="label">Effective Estate Tax Rate</div>
-                        <div class="value" id="resTaxRate">0%</div>
-                    </div>
+            <div class="stat-grid">
+                <div class="stat-row">
+                    <div class="label">Total Capital Contributed</div>
+                    <div class="value" id="resContributed">$0</div>
+                </div>
+                <div class="stat-row">
+                    <div class="label">Gross Portfolio (Pre-Tax)</div>
+                    <div class="value" id="resGross">$0</div>
+                </div>
+                <div class="stat-row">
+                    <div class="label">Total Estate Taxes Paid</div>
+                    <div class="value" id="resTaxes">$0</div>
+                </div>
+                <div class="stat-row">
+                    <div class="label">Effective Estate Tax Rate</div>
+                    <div class="value" id="resTaxRate">0.0%</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Fallback data in case settings.csv cannot be fetched (e.g. running locally via file:///)
+        // Fallback data
         const fallbackTaxData = [
             {Province: 'QC', Owner: 'Personal', TaxRate: 0.5331, Inclusion: 0.5, DividendE: 0.4011, DividendNE: 0.4870, RDTOH: 0},
             {Province: 'QC', Owner: 'Corporate', TaxRate: 0.5017, Inclusion: 0.5, DividendE: 0.3833, DividendNE: 0.3833, RDTOH: 0.3067},
@@ -370,26 +366,20 @@
 
         let taxData = [];
 
-        // Formatting utilities
+        // Formatting
         const formatCurrency = (num) => new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(num);
         const parsePercent = (str) => parseFloat(str.replace('%', '')) / 100;
 
-        // Initialize application
         async function init() {
             try {
                 const response = await fetch('settings.csv');
-                if (!response.ok) throw new Error("Could not load settings.csv");
+                if (!response.ok) throw new Error("Fetch failed");
                 const text = await response.text();
                 parseCSV(text);
-                document.getElementById('status').innerText = "✅ settings.csv loaded successfully.";
-                document.getElementById('status').style.background = "#dcfce7";
-                document.getElementById('status').style.color = "#166534";
+                document.getElementById('status').innerText = "[OK] settings.csv loaded successfully.";
             } catch (err) {
-                console.warn(err);
                 taxData = fallbackTaxData;
-                document.getElementById('status').innerText = "⚠️ Could not load settings.csv (running locally without server). Using fallback defaults.";
-                document.getElementById('status').style.background = "#fef08a";
-                document.getElementById('status').style.color = "#854d0e";
+                document.getElementById('status').innerText = "[WARN] settings.csv not found. Using local fallback values.";
             }
             populateDropdowns();
             attachEventListeners();
@@ -411,7 +401,6 @@
                     else if (!isNaN(parseFloat(val)) && h !== 'Province' && h !== 'Owner') val = parseFloat(val);
                     row[h] = val;
                 });
-                // Ensure field names match our expectations
                 taxData.push({
                     Province: row['Province'],
                     Owner: row['Owner'],
@@ -437,9 +426,7 @@
         }
 
         function attachEventListeners() {
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach(input => input.addEventListener('input', calculate));
-
+            document.querySelectorAll('input, select').forEach(input => input.addEventListener('input', calculate));
             document.querySelectorAll('.preset-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
@@ -471,7 +458,6 @@
         }
 
         function calculate() {
-            // Get Allocation sum
             const allocDcg = parseFloat(document.getElementById('allocDcg').value) || 0;
             const allocRcg = parseFloat(document.getElementById('allocRcg').value) || 0;
             const allocFi = parseFloat(document.getElementById('allocFi').value) || 0;
@@ -481,17 +467,15 @@
             const warn = document.getElementById('alloc-warning');
             if(totalAlloc !== 100) {
                 warn.style.display = 'block';
-                return; // Stop calc if not 100%
+                return;
             } else {
                 warn.style.display = 'none';
             }
 
-            // Rates (convert to decimal)
             const rateDcg = (parseFloat(document.getElementById('rateDcg').value) || 0) / 100;
             const rateRcg = (parseFloat(document.getElementById('rateRcg').value) || 0) / 100;
             const rateFi = (parseFloat(document.getElementById('rateFi').value) || 0) / 100;
 
-            // Basic Inputs
             const age = parseInt(document.getElementById('age').value);
             const le = parseInt(document.getElementById('le').value);
             const deposit = parseFloat(document.getElementById('deposit').value);
@@ -502,9 +486,8 @@
 
             document.getElementById('resAge').innerText = le;
 
-            // Tax Settings
             const tData = getTaxRow(prov, owner);
-            const personalTData = getTaxRow(prov, 'Personal'); // Needed for corp integration
+            const personalTData = getTaxRow(prov, 'Personal');
             if (!tData || !personalTData) return;
 
             const tr = tData.TaxRate;
@@ -512,7 +495,6 @@
             const rdtohRate = tData.RDTOH;
             const persDivNERate = personalTData.DividendNE;
 
-            // Simulation Variables
             let valDcg = 0, valRcg = 0, valFi = 0;
             let acbDcg = 0;
             let cumCDA = 0;
@@ -521,7 +503,6 @@
 
             const yearsToRun = le - age;
 
-            // Yearly Loop
             for (let y = 1; y <= yearsToRun; y++) {
                 let currentDep = (y <= numDeposits) ? deposit : 0;
                 totalContributed += currentDep;
@@ -530,13 +511,11 @@
                 let depRcg = currentDep * (allocRcg / 100);
                 let depFi = currentDep * (allocFi / 100);
 
-                // Fixed Income (Taxed annually)
                 let fiGrowth = (valFi + depFi) * rateFi;
                 let fiTax = fiGrowth * tr;
                 valFi += depFi + fiGrowth - fiTax;
                 if (isCorp) cumRDTOH += fiGrowth * rdtohRate;
 
-                // Realized CG (Taxed annually based on inclusion)
                 let rcgGrowth = (valRcg + depRcg) * rateRcg;
                 let rcgTaxable = rcgGrowth * inc;
                 let rcgTax = rcgTaxable * tr;
@@ -546,19 +525,16 @@
                     cumCDA += (rcgGrowth - rcgTaxable);
                 }
 
-                // Deferred CG (Tax Deferred)
                 let dcgGrowth = (valDcg + depDcg) * rateDcg;
                 valDcg += depDcg + dcgGrowth;
                 acbDcg += depDcg;
             }
 
-            // AT DEATH - Liquidation
             let grossPortfolio = valFi + valRcg + valDcg;
             let netToEstate = 0;
             let finalEstateTax = 0;
 
             let dcgUnrealized = valDcg - acbDcg;
-            // Prevent negative taxable gain if underwater
             if (dcgUnrealized < 0) dcgUnrealized = 0; 
             
             let dcgTaxable = dcgUnrealized * inc;
@@ -580,21 +556,18 @@
                 let personalTax = nonEligDiv * persDivNERate;
                 
                 netToEstate = capDiv + nonEligDiv - personalTax;
-                finalEstateTax = dcgCorpTax + personalTax; // Only tracking the final estate liquidation taxes
+                finalEstateTax = dcgCorpTax + personalTax;
             } else {
-                // Personal
                 let personalTax = dcgTaxable * tr;
                 netToEstate = grossPortfolio - personalTax;
                 finalEstateTax = personalTax;
             }
 
-            // Update UI
             document.getElementById('resNetEstate').innerText = formatCurrency(netToEstate);
             document.getElementById('resContributed').innerText = formatCurrency(totalContributed);
             document.getElementById('resGross').innerText = formatCurrency(grossPortfolio);
             document.getElementById('resTaxes').innerText = formatCurrency(finalEstateTax);
             
-            // Effective tax rate on the final liquidation event (estate tax / unrealized gain)
             let effectiveRate = dcgUnrealized > 0 ? (finalEstateTax / dcgUnrealized) * 100 : 0;
             document.getElementById('resTaxRate').innerText = effectiveRate.toFixed(1) + '%';
         }
