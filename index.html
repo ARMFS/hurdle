@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARMFS: Interactive Fund Model</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <style>
         :root {
             --bg: #0000aa;
@@ -355,7 +356,7 @@
             document.getElementById('province').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
             document.getElementById('owner').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
             document.getElementById('runBtn').addEventListener('click', calculate);
-            document.getElementById('exportBtn').addEventListener('click', exportAuditCSV);
+            document.getElementById('exportBtn').addEventListener('click', exportAuditExcel);
             
             document.querySelectorAll('input').forEach(input => {
                 input.addEventListener('change', calculate);
@@ -630,7 +631,16 @@
             document.getElementById('status').innerText = "> BATCH JOB COMPLETE. RESULTS READY.";
         }
 
-        function exportAuditCSV() {
+        async function exportAuditExcel() {
+            if (!window.ExcelJS) {
+                document.getElementById('status').innerText = "> ERR: EXCELJS LIBRARY NOT LOADED.";
+                document.getElementById('status').style.color = "var(--danger)";
+                return;
+            }
+            
+            document.getElementById('status').innerText = "> GENERATING EXCEL AUDIT FILE...";
+            document.getElementById('status').style.color = "var(--fg)";
+
             const prov = document.getElementById('province').value;
             const owner = document.getElementById('owner').value;
             const isCorp = owner === 'Corporate';
@@ -658,21 +668,48 @@
             const numDeposits = parseInt(document.getElementById('years').value);
             const yearsToRun = Math.max(le - age, 1);
 
-            let csv = "ARMFS INTERACTIVE FUND MODEL - AUDIT EXCEL WITH FORMULAS\n\n";
-            csv += "--- GLOBALS ---\n";
-            csv += `Corp Tax Rate,${tr}\n`;               // B3
-            csv += `Inclusion Rate,${inc}\n`;              // B4
-            csv += `RDTOH Rate,${rdtohRate}\n`;            // B5
-            csv += `Div Refund Rate,${refundRate}\n`;      // B6
-            csv += `Personal Div Tax,${persDivNERate}\n`;  // B7
-            csv += `FI Alloc,${allocFi}\n`;                // B8
-            csv += `FI Rate,${rateFi}\n`;                  // B9
-            csv += `RCG Alloc,${allocRcg}\n`;              // B10
-            csv += `RCG Rate,${rateRcg}\n`;                // B11
-            csv += `DCG Alloc,${allocDcg}\n`;              // B12
-            csv += `DCG Rate,${rateDcg}\n`;                // B13
-            csv += "\n";
+            const wb = new ExcelJS.Workbook();
+            const ws = wb.addWorksheet('ARMFS Audit');
 
+            // --- STYLES ---
+            const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF000080' } }; // Navy
+            const headerFont = { color: { argb: 'FFFFFFFF' }, bold: true };
+            const numFormat = '"$"#,##0.00';
+            const pctFormat = '0.00%';
+
+            // --- GLOBALS SECTION ---
+            ws.getCell('A1').value = 'ARMFS INTERACTIVE FUND MODEL - EXCEL AUDIT';
+            ws.getCell('A1').font = { bold: true, size: 14 };
+            ws.mergeCells('A1:E1');
+
+            const globals = [
+                ['Corp Tax Rate', tr, pctFormat],
+                ['Inclusion Rate', inc, pctFormat],
+                ['RDTOH Rate', rdtohRate, pctFormat],
+                ['Div Refund Rate', refundRate, pctFormat],
+                ['Personal Div Tax', persDivNERate, pctFormat],
+                ['FI Alloc', allocFi, pctFormat],
+                ['FI Rate', rateFi, pctFormat],
+                ['RCG Alloc', allocRcg, pctFormat],
+                ['RCG Rate', rateRcg, pctFormat],
+                ['DCG Alloc', allocDcg, pctFormat],
+                ['DCG Rate', rateDcg, pctFormat],
+                ['Deposit', deposit, numFormat],
+                ['Deposit Years', numDeposits, '0']
+            ];
+
+            let rowIdx = 3;
+            globals.forEach(g => {
+                ws.getCell(`A${rowIdx}`).value = g[0];
+                ws.getCell(`A${rowIdx}`).font = { bold: true };
+                ws.getCell(`B${rowIdx}`).value = g[1];
+                ws.getCell(`B${rowIdx}`).numFmt = g[2];
+                rowIdx++;
+            });
+
+            // --- TABLE HEADERS ---
+            rowIdx++; // Space
+            const tableHeaderRow = rowIdx;
             const headers = [
                 "Year", "Age", "Deposit", "Dep_FI", "FI_BOY", "FI_Growth", "FI_Tax", "FI_EOY",
                 "Dep_RCG", "RCG_BOY", "RCG_Growth", "RCG_Taxable", "RCG_Tax", "RCG_EOY",
@@ -682,85 +719,140 @@
                 "Liq_Corp_Cash", "Liq_Div_for_Refund", "Liq_Remaining_Cash", "Liq_Total_NonElig_Div",
                 "Liq_Personal_Tax", "NET_CASH_TO_ESTATE"
             ];
-            csv += headers.join(",") + "\n";
 
+            const cols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").concat(["AA","AB","AC","AD","AE","AF","AG"]);
+
+            headers.forEach((h, i) => {
+                const cell = ws.getCell(`${cols[i]}${tableHeaderRow}`);
+                cell.value = h;
+                cell.fill = headerFill;
+                cell.font = headerFont;
+                ws.getColumn(i+1).width = 16; // Set column width
+            });
+
+            // --- FORMULA ROW GENERATION ---
+            let dataStartRow = tableHeaderRow + 1;
             for (let y = 1; y <= yearsToRun; y++) {
-                let rowNum = 15 + y; // Headers are row 15 in this setup
-                let prevRow = rowNum - 1;
-                let currentAge = age + y;
-                let currentDep = (y <= numDeposits) ? deposit : 0;
+                let r = dataStartRow + y - 1;
+                let prev = r - 1;
 
-                let row = [];
-                row.push(y); // A
-                row.push(currentAge); // B
-                row.push(currentDep); // C
-                row.push(`=C${rowNum}*$B$8`); // D: Dep_FI
-                row.push(y === 1 ? 0 : `=H${prevRow}`); // E: FI_BOY
-                row.push(`=(E${rowNum}+D${rowNum})*$B$9`); // F: FI_Growth
-                row.push(`=F${rowNum}*$B$3`); // G: FI_Tax
-                row.push(`=E${rowNum}+D${rowNum}+F${rowNum}-G${rowNum}`); // H: FI_EOY
+                // 1. Year (A)
+                ws.getCell(`A${r}`).value = y;
+                // 2. Age (B)
+                ws.getCell(`B${r}`).value = age + y;
+                // 3. Deposit (C)
+                ws.getCell(`C${r}`).value = { formula: `IF(A${r}<=$B$15, $B$14, 0)` }; 
+                
+                // --- FIXED INCOME ---
+                // 4. Dep_FI (D)
+                ws.getCell(`D${r}`).value = { formula: `C${r}*$B$8` };
+                // 5. FI_BOY (E)
+                ws.getCell(`E${r}`).value = y === 1 ? 0 : { formula: `H${prev}` };
+                // 6. FI_Growth (F)
+                ws.getCell(`F${r}`).value = { formula: `(E${r}+D${r})*$B$9` };
+                // 7. FI_Tax (G)
+                ws.getCell(`G${r}`).value = { formula: `F${r}*$B$3` };
+                // 8. FI_EOY (H)
+                ws.getCell(`H${r}`).value = { formula: `E${r}+D${r}+F${r}-G${r}` };
 
-                row.push(`=C${rowNum}*$B$10`); // I: Dep_RCG
-                row.push(y === 1 ? 0 : `=N${prevRow}`); // J: RCG_BOY
-                row.push(`=(J${rowNum}+I${rowNum})*$B$11`); // K: RCG_Growth
-                row.push(`=K${rowNum}*$B$4`); // L: RCG_Taxable
-                row.push(`=L${rowNum}*$B$3`); // M: RCG_Tax
-                row.push(`=J${rowNum}+I${rowNum}+K${rowNum}-M${rowNum}`); // N: RCG_EOY
+                // --- REALIZED CG ---
+                // 9. Dep_RCG (I)
+                ws.getCell(`I${r}`).value = { formula: `C${r}*$B$10` };
+                // 10. RCG_BOY (J)
+                ws.getCell(`J${r}`).value = y === 1 ? 0 : { formula: `N${prev}` };
+                // 11. RCG_Growth (K)
+                ws.getCell(`K${r}`).value = { formula: `(J${r}+I${r})*$B$11` };
+                // 12. RCG_Taxable (L)
+                ws.getCell(`L${r}`).value = { formula: `K${r}*$B$4` };
+                // 13. RCG_Tax (M)
+                ws.getCell(`M${r}`).value = { formula: `L${r}*$B$3` };
+                // 14. RCG_EOY (N)
+                ws.getCell(`N${r}`).value = { formula: `J${r}+I${r}+K${r}-M${r}` };
 
-                row.push(`=C${rowNum}*$B$12`); // O: Dep_DCG
-                row.push(y === 1 ? 0 : `=R${prevRow}`); // P: DCG_BOY
-                row.push(`=(P${rowNum}+O${rowNum})*$B$13`); // Q: DCG_Growth
-                row.push(`=P${rowNum}+O${rowNum}+Q${rowNum}`); // R: DCG_EOY
-                row.push(y === 1 ? `=O${rowNum}` : `=S${prevRow}+O${rowNum}`); // S: DCG_ACB
+                // --- DEFERRED CG ---
+                // 15. Dep_DCG (O)
+                ws.getCell(`O${r}`).value = { formula: `C${r}*$B$12` };
+                // 16. DCG_BOY (P)
+                ws.getCell(`P${r}`).value = y === 1 ? 0 : { formula: `R${prev}` };
+                // 17. DCG_Growth (Q)
+                ws.getCell(`Q${r}`).value = { formula: `(P${r}+O${r})*$B$13` };
+                // 18. DCG_EOY (R)
+                ws.getCell(`R${r}`).value = { formula: `P${r}+O${r}+Q${r}` };
+                // 19. DCG_ACB (S)
+                ws.getCell(`S${r}`).value = y === 1 ? { formula: `O${r}` } : { formula: `S${prev}+O${r}` };
 
-                row.push(`=H${rowNum}+N${rowNum}+R${rowNum}`); // T: Gross_Portfolio
-
+                // --- AGGREGATES ---
+                // 20. Gross_Portfolio (T)
+                ws.getCell(`T${r}`).value = { formula: `H${r}+N${r}+R${r}` };
+                
                 if (isCorp) {
-                    row.push(y === 1 ? `=K${rowNum}-L${rowNum}` : `=U${prevRow}+(K${rowNum}-L${rowNum})`); // U: Cum_CDA
-                    row.push(y === 1 ? `=F${rowNum}*$B$5+L${rowNum}*$B$5` : `=V${prevRow}+(F${rowNum}*$B$5+L${rowNum}*$B$5)`); // V: Cum_RDTOH
+                    // 21. Cum_CDA (U)
+                    ws.getCell(`U${r}`).value = y === 1 ? { formula: `K${r}-L${r}` } : { formula: `U${prev}+(K${r}-L${r})` };
+                    // 22. Cum_RDTOH (V)
+                    ws.getCell(`V${r}`).value = y === 1 ? { formula: `F${r}*$B$5+L${r}*$B$5` } : { formula: `V${prev}+(F${r}*$B$5+L${r}*$B$5)` };
 
-                    row.push(`=MAX(0, R${rowNum}-S${rowNum})`); // W: Liq_DCG_Unrealized
-                    row.push(`=W${rowNum}*$B$4`); // X: Liq_DCG_Taxable
-                    row.push(`=X${rowNum}*$B$3`); // Y: Liq_Corp_Tax
-
-                    row.push(`=U${rowNum}+(W${rowNum}-X${rowNum})`); // Z: Liq_Final_CDA
-                    row.push(`=V${rowNum}+(X${rowNum}*$B$5)`); // AA: Liq_Final_RDTOH
-
-                    row.push(`=T${rowNum}-Y${rowNum}`); // AB: Liq_Corp_Cash
-                    row.push(`=AA${rowNum}/$B$6`); // AC: Liq_Div_for_Refund
-                    row.push(`=MAX(0, AB${rowNum}-Z${rowNum}-AC${rowNum}+AA${rowNum})`); // AD: Liq_Remaining_Cash
-                    row.push(`=AC${rowNum}+AD${rowNum}`); // AE: Liq_Total_NonElig_Div
-                    row.push(`=AE${rowNum}*$B$7`); // AF: Liq_Personal_Tax
-                    row.push(`=Z${rowNum}+AE${rowNum}-AF${rowNum}`); // AG: NET_CASH_TO_ESTATE
-
+                    // --- LIQUIDATION MATH ---
+                    // 23. Liq_DCG_Unrealized (W)
+                    ws.getCell(`W${r}`).value = { formula: `MAX(0, R${r}-S${r})` };
+                    // 24. Liq_DCG_Taxable (X)
+                    ws.getCell(`X${r}`).value = { formula: `W${r}*$B$4` };
+                    // 25. Liq_Corp_Tax (Y)
+                    ws.getCell(`Y${r}`).value = { formula: `X${r}*$B$3` };
+                    // 26. Liq_Final_CDA (Z)
+                    ws.getCell(`Z${r}`).value = { formula: `U${r}+(W${r}-X${r})` };
+                    // 27. Liq_Final_RDTOH (AA)
+                    ws.getCell(`AA${r}`).value = { formula: `V${r}+(X${r}*$B$5)` };
+                    
+                    // 28. Liq_Corp_Cash (AB)
+                    ws.getCell(`AB${r}`).value = { formula: `T${r}-Y${r}` };
+                    // 29. Liq_Div_for_Refund (AC)
+                    ws.getCell(`AC${r}`).value = { formula: `AA${r}/$B$6` };
+                    // 30. Liq_Remaining_Cash (AD)
+                    ws.getCell(`AD${r}`).value = { formula: `MAX(0, AB${r}-Z${r}-AC${r}+AA${r})` };
+                    // 31. Liq_Total_NonElig_Div (AE)
+                    ws.getCell(`AE${r}`).value = { formula: `AC${r}+AD${r}` };
+                    // 32. Liq_Personal_Tax (AF)
+                    ws.getCell(`AF${r}`).value = { formula: `AE${r}*$B$7` };
+                    
+                    // 33. NET_CASH_TO_ESTATE (AG)
+                    ws.getCell(`AG${r}`).value = { formula: `Z${r}+AE${r}-AF${r}` };
                 } else {
-                    row.push(0); // U: Cum_CDA
-                    row.push(0); // V: Cum_RDTOH
-                    row.push(`=MAX(0, R${rowNum}-S${rowNum})`); // W: Liq_DCG_Unrealized
-                    row.push(`=W${rowNum}*$B$4`); // X: Liq_DCG_Taxable
-                    row.push(`=X${rowNum}*$B$3`); // Y: Liq_Corp_Tax (Acts as Personal Tax)
-                    row.push(0); // Z
-                    row.push(0); // AA
-                    row.push(0); // AB
-                    row.push(0); // AC
-                    row.push(0); // AD
-                    row.push(0); // AE
-                    row.push(`=Y${rowNum}`); // AF: Liq_Personal_Tax
-                    row.push(`=T${rowNum}-Y${rowNum}`); // AG: NET_CASH_TO_ESTATE
+                    ws.getCell(`U${r}`).value = 0;
+                    ws.getCell(`V${r}`).value = 0;
+                    ws.getCell(`W${r}`).value = { formula: `MAX(0, R${r}-S${r})` };
+                    ws.getCell(`X${r}`).value = { formula: `W${r}*$B$4` };
+                    ws.getCell(`Y${r}`).value = { formula: `X${r}*$B$3` }; // Acts as personal tax
+                    ws.getCell(`Z${r}`).value = 0;
+                    ws.getCell(`AA${r}`).value = 0;
+                    ws.getCell(`AB${r}`).value = 0;
+                    ws.getCell(`AC${r}`).value = 0;
+                    ws.getCell(`AD${r}`).value = 0;
+                    ws.getCell(`AE${r}`).value = 0;
+                    ws.getCell(`AF${r}`).value = { formula: `Y${r}` };
+                    ws.getCell(`AG${r}`).value = { formula: `T${r}-Y${r}` };
                 }
 
-                csv += row.join(",") + "\n";
+                // Format row
+                for(let c=3; c<=33; c++) {
+                    ws.getCell(`${cols[c-1]}${r}`).numFmt = numFormat;
+                }
             }
 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            // Highlight the final Net Estate column
+            ws.getColumn('AG').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF99' } };
+            ws.getColumn('AG').font = { bold: true };
+
+            const buffer = await wb.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", "ARMFS_Audit_Export.csv");
-            link.style.visibility = 'hidden';
+            link.href = URL.createObjectURL(blob);
+            link.download = "ARMFS_Interactive_Model_Audit.xlsx";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+
+            document.getElementById('status').innerText = "> EXCEL FILE DOWNLOADED.";
+            document.getElementById('status').style.color = "var(--ok)";
         }
 
         window.onload = init;
