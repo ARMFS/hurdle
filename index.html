@@ -1,0 +1,1068 @@
+
+Conversation with Gemini
+i think the only difffernec occurs if you comnece break past MTAR ... what would be the difference? I think it would increase the Coverage to keep MTAR and otehrwise it wopuld retain and use side account
+
+You are exactly right! Your understanding of how these two exemption test methods work in Canadian Universal Life policies is spot on.
+
+Because the files uploaded earlier were identical, we couldn't see it in the data, but here is exactly what happens behind the scenes once the policy reaches that Maximum Tax Actuarial Reserve (MTAR) limit:
+
+1. "Increase" (Increasing the Death Benefit)
+
+What happens: When the cash in the investment account grows too large and is about to violate the MTAR limit, the policy automatically increases the death benefit.
+
+Impact on NAAR & COI: By pushing the death benefit higher, the Net Amount at Risk (NAAR) remains higher. Because the insurance company is taking on more risk (a higher payout upon death), your Cost of Insurance (COI) charges will increase.
+
+Tax Status: The main advantage here is that 100% of your money stays inside the tax-sheltered umbrella of the life insurance policy.
+
+2. "Retain" (Using a Shuttle/Service Account)
+
+What happens: When the MTAR limit is reached, the policy refuses to increase the death benefit. Instead, to keep the main policy tax-exempt, it "spills" the excess cash into a separate, non-exempt side account (often called a Shuttle Account, or in Sun Life's case, the Service Account).
+
+Impact on NAAR & COI: Because the death benefit doesn't jump up, the NAAR gets smaller as the cash value approaches the limit. As a result, the Cost of Insurance (COI) charges stay lower.
+
+Tax Status: The drawback is that the money forced into the Service/Side account is no longer tax-sheltered. Any interest or growth earned in that side account is taxable to the policy owner each year.
+
+How to spot the difference in your spreadsheets (once you run them properly):
+If you re-run the illustration where the fund actually breaks the MTAR limit, look at these specific columns in the Product values.csv file:
+
+Total policy death benefit: In the Increase scenario, you will see this number suddenly start growing in the later years. In the Retain scenario, it will stay level.
+
+Service account balance: In the Increase scenario, this will stay at $0. In the Retain scenario, you will see money start accumulating here once the limit is hit.
+
+Total COI: You will see higher monthly/annual deductions in the Increase scenario during those later years.
+
+You nailed it! The new files you uploaded with the much larger annual premiums ($373,281) successfully force the policy to break the MTAR (Maximum Tax Actuarial Reserve) limit, and we can finally see your theory in action in the data.
+
+You were absolutely right: Increasing the coverage keeps the NAAR higher (and COI higher), while Retaining the coverage forces more money into the side/service account, which lowers the NAAR.
+
+Here is exactly what happens in your spreadsheets. The divergence begins in Year 5 (Age 37) when the cash value pushes against the MTAR limit.
+
+By Year 10 (Age 42), the difference is stark. Here is a snapshot comparing the Primary Rate scenarios:
+
+1. The "Increase" Scenario (Year 10)
+Because you told the illustration to "Increase" to maintain tax-exempt status, the policy aggressively buys more insurance room to shelter your investments.
+
+Total Death Benefit: $15,403,616 (It shot way up to make room for the cash)
+
+Net Amount at Risk (NAAR): $11,115,107 (Much higher because the death benefit climbed)
+
+Total COI: $25,961 (Higher, because you are paying for that increased NAAR)
+
+Service Account: $664,953 (Some money still spilled over—more on this below!)
+
+2. The "Retain" Scenario (Year 10)
+Because you told the illustration to "Retain" the coverage, it refuses to bump up the insurance amount to make room, forcing the excess cash outside the tax shelter.
+
+Total Death Benefit: $12,629,650 (Stays much lower)
+
+Net Amount at Risk (NAAR): $8,941,258 (Lower, because the cash value is rising against a flat death benefit)
+
+Total COI: $24,377 (Lower, because your NAAR is smaller)
+
+Service Account: $1,149,569 (Almost double the amount is forced into the taxable side account compared to the Increase scenario)
+
+One interesting hidden detail...
+You might notice that even in the "Increase" scenario, money still eventually spills into the Service Account. Why didn't it shelter 100% of it?
+
+If you look further down the spreadsheet at Year 20 (Age 52) in the Increase scenario, the Total Policy Death Benefit hits exactly $30,000,000 and stops growing. Insurance companies (and the software) usually have a maximum death benefit cap they will allow a policy to grow to without requiring you to undergo new medical underwriting. Because your premiums and growth are so massive, you actually maxed out the absolute limit of the policy's death benefit ($30 Million), meaning the policy had no choice but to start dumping the rest of the excess cash into the taxable Service Account anyway!
+
+so which one is the bnetter deal if i want to minimize risk
+
+If your primary goal is to minimize risk, the "Retain" scenario is generally the safer, lower-risk deal. Here is why:
+
+When we talk about "risk" in Universal Life policies that are overfunded, it usually comes down to the balance between Tax Risk and Policy/Cost Risk.
+
+Here is how the two compare:
+
+1. The "Retain" Option (Lower Risk)
+What you are doing: You are choosing not to buy more insurance than you initially signed up for.
+
+Why it's less risky: By keeping your Death Benefit level, your Net Amount at Risk (NAAR) gets smaller as your cash grows. Because NAAR is the exact number the insurance company uses to calculate your Cost of Insurance (COI), your monthly insurance charges stay lower and more predictable. * The trade-off (Tax): The excess cash spills into the Service Account, meaning you will have to pay taxes on the investment growth in that side account each year.
+
+The Verdict: You are accepting a known, external tax bill instead of taking on massive internal insurance costs. If your investments underperform in a given year, your policy won't be drained by huge insurance fees.
+
+2. The "Increase" Option (Higher Risk)
+What you are doing: You are forcing the policy to automatically buy more and more insurance just to create a bigger "tax shelter" for your investments.
+
+Why it's more risky: To keep all your money tax-exempt, the policy pushes your Death Benefit up (in your case, from $10M all the way to $30M). This creates a massive NAAR, which means your Cost of Insurance (COI) skyrockets.
+
+The Danger: You are essentially buying millions of dollars of extra life insurance just to avoid paying taxes on your investment growth. If the market dips or the policy's interest rate underperforms, those massive, mandatory COI charges will still be deducted every month. High internal costs can quickly chew up your cash value and, in severe cases, cause a policy to collapse if not monitored carefully.
+
+Summary
+If you want to minimize risk, choose Retain. You will pay some taxes on the side account, but your insurance costs will be much lower and your policy will be vastly more resilient to market downturns.
+
+If your goal is to minimize taxes at all costs and you are highly confident in the long-term performance of your investments, you would choose Increase—just be aware that you are trading tax risk for higher internal fee risk!
+
+put it this way if i am finding mini annual lvel then if i am breaking MTAR then that is a HUGE win anyways
+
+You are 100% correct, and that is a fantastic way to look at it!
+
+If your strategy is simply to fund the minimum annual level premium needed to keep the policy going, and your cash value still grows so much that it breaks the MTAR limit down the road—that means your investments performed incredibly well. You essentially hit a home run.
+
+In that scenario, hitting the MTAR limit is a "luxury problem." Here is why it's such a huge win:
+
+Massive Investment Growth: It means the market returns inside your policy completely outpaced the insurance costs. Your minimum contributions compounded so aggressively that they filled up the massive tax-sheltered "room" the government allows for your policy size.
+
+You Beat the Math: Most policies funded at a minimum level will never even come close to the MTAR limit. If yours does, it means the actual performance blew the original projection out of the water.
+
+Flexibility: When you have a "minimum premium" mindset, breaking MTAR is just gravy. At that point, whether you choose "Increase" (buying more insurance with your massive gains to shelter it all) or "Retain" (letting the extra spill into a taxable account and enjoying the profits), you are playing with the house's money.
+
+So yes, if you are planning to pay the minimum and you end up breaking MTAR anyway, pop the champagne! It means your policy has been a massive financial success.
+
+if i wantyed to illsutrate how a totla return fund would do
+
+
+
+in a holdco I would assum,e total growth repeasted then a 50.17/2 on gain
+
+
+
+then is ther any RDTOH?
+
+
+
+then a dividend I guess? Or a capital gain on disposition?
+
+You have the right general idea! Using a total return fund (like a corporate class fund) inside a holding company is a highly effective strategy to turn highly-taxed annual income (like interest or foreign dividends) into tax-deferred capital gains.
+
+Here is exactly how it works step-by-step, addressing your assumptions about the math, the RDTOH, and how you extract the money:
+
+1. The Growth Phase (Tax Deferral)
+Because it is a total return fund, it doesn't pay out annual taxable distributions. The growth simply compounds inside the fund. No tax is paid until you sell (dispose of) the fund. ### 2. The Disposition (The Sale)
+When you finally sell the fund, the entire accumulated growth is realized by your Holdco as a Capital Gain.
+
+The Tax Math: Your assumption of 50.17% / 2 (an effective tax rate of 25.085% on the total gain) is correct based on a 50% inclusion rate and the passive corporate tax rate in provinces like Quebec.
+
+Important Update to Note: The federal government recently announced an increase in the corporate capital gains inclusion rate from 50% to 66.67% (2/3). However, as of January 2025, they deferred this increase to January 1, 2026. So, if you sell before 2026, it is a 50% inclusion rate. After that, 66.67% of the gain will be taxable.  
+Stern Cohen Accountants
+
+3. Is there any RDTOH?
+Yes, absolutely. Because the taxable half of a capital gain is considered "passive investment income," a large chunk of that 50.17% corporate tax is refundable.  
+Manulife Investment Management
+
+Specifically, 30.67% of the taxable portion of the gain goes into your Holdco’s Non-Eligible RDTOH (NERDTOH) account.  
+Manulife Investment Management
+
+4. How does the money get out to you?
+The money does not come out to you as a capital gain. It comes out via two different types of dividends:
+
+Step 1: The Tax-Free Capital Dividend (The best part)
+
+The non-taxable half of your capital gain (currently 50%) is added to your Holdco’s Capital Dividend Account (CDA).  
+Manulife Investment Management
+
+You can elect to pay this entire amount out to yourself (the shareholder) as a Capital Dividend, which is 100% tax-free in your personal hands.
+
+Step 2: The Taxable Dividend (To get your RDTOH refund)
+
+After paying corporate tax, your Holdco is left with the remaining cash, plus a balance in its RDTOH account.
+
+To get that RDTOH refund back from the CRA, your Holdco must pay you a taxable non-eligible dividend.
+
+For every $2.61 in non-eligible dividends your Holdco pays you, it gets $1.00 of its RDTOH refunded.  
+Manulife Investment Management
+
+You will then declare that non-eligible dividend on your personal tax return and pay personal tax on it based on your marginal tax bracket.
+
+Summary Walkthrough (Example: $100,000 Total Gain before Jan 1, 2026)
+The Gain: Holdco realizes $100,000 Capital Gain.
+
+Corporate Tax: $50,000 is taxable. Holdco pays ~$25,085 in corporate tax (50.17%).
+
+CDA Created: The $50,000 non-taxable portion goes to the CDA.  
+Eric Desrochers Group
+
+RDTOH Created: $15,335 (which is 30.67% of the $50k taxable gain) goes into the RDTOH account.
+
+Extraction Part 1: Holdco pays you a $50,000 Tax-Free Capital Dividend.
+
+Extraction Part 2: Holdco pays you a ~$40,250 Non-Eligible Dividend. (This allows the Holdco to recover the $15,335 RDTOH refund, which helps fund the dividend payment).
+
+Personal Tax: You pay $0 tax on the $50k, and personal dividend tax on the $40,250.
+
+Because of the mechanism above, the concept of "integration" ensures you are made whole, but the true magic of the total return fund is the years of uninterrupted, tax-deferred compounding before you trigger that final disposition!
+
+can you make me a simple excel that shows grwth with distribution if realized annually
+
+
+
+so basically:
+
+
+
+yr, Deposit, Fund BOY, INcome, Fund EOY, (do i track RDTOH?
+
+
+
+then a detail on distrobution at year 31
+
+I have created a Google Sheet for you that models a "Total Return Fund" running inside a Holdco.
+
+In this scenario, I assumed a $100,000 annual deposit for 30 years growing at 6% per year completely deferred (no annual distributions).
+
+I built the spreadsheet so that the top section tracks the year-by-year unrealized growth, and shows you exactly how much theoretical CDA (Capital Dividend Account) and RDTOH (Refundable Dividend Tax on Hand) you are building up in the background.
+
+The bottom section simulates exactly what happens in Year 31 if you sell and distribute everything (Disposition Detail), breaking down the exact corporate tax, CDA payouts, and taxable dividends required to get your RDTOH refund back.
+
+Holdco Total Return Fund Projection
+Google Sheets icon
+ Holdco Tot...Projection 
+Google Sheets
+
+If you'd like to adjust the inputs (like the growth rate, annual deposit amount, or tax bracket), you can make a copy of the sheet and simply edit the formulas, or let me know and I can generate an updated version for you!
+
+give it to me woth formulas please
+
+I have generated a new version of the sheet with all the formulas fully connected!
+XLSX icon
+ Holdco_Tot...n_Formulas 
+XLSX
+XLSX icon
+ Holdco_Tot...n_Formulas 
+XLSX
+
+In this version, I've added an Inputs section at the very top. If you change the Annual Deposit, the Growth Rate, or any of the Tax Rates, the entire 30-year projection and the Year 31 Disposition detailing the CDA, Corporate Tax, and Dividends will instantly recalculate.
+
+Here is the new Google Sheet:
+Holdco Total Return Fund Projection with Formulas
+Google Sheets icon
+ Holdco Tot...h Formulas 
+Google Sheets
+
+(Note: I also generated a standard .xlsx version of this file in my environment that is available to you if you prefer downloading it locally instead of using Google Sheets.)
+
+You can now adjust the variables to instantly stress-test different return scenarios!
+
+$23,309,239 left from 25 492 proceeds? seems high
+
+It does seem incredibly high at first glance, but the math in the spreadsheet is completely correct!
+
+However, there is a very important "catch" that explains why that number looks so big: The $23,309,239 is the total cash extracted from the Holdco to you, but it is NOT your final after-tax money in your pocket. You still have to pay personal tax on a portion of it.
+
+Here is the breakdown of why the Holdco is able to push so much cash out to you, and what your actual take-home would be.
+
+1. Why the Holdco keeps so much (The RDTOH Magic)
+When your Holdco sells the fund for $25,492,709:
+
+It owes the CRA $5,617,677 in corporate capital gains tax.
+
+This leaves the Holdco with $19,875,031 in cash.
+
+However, because it pays out dividends to you, the CRA gives the Holdco a refund (RDTOH) of $3,434,207.
+
+So the Holdco's final cash available to pay you is: $19,875,031 + $3,434,207 = $23,309,238
+
+Essentially, after the RDTOH refund, the Holdco only suffered a permanent tax loss of about $2.18 Million on a $22.3 Million capital gain!
+
+2. The Catch: Your Personal Taxes
+That $23.3 Million is distributed into your personal hands in two different buckets, and this is where the taxman gets his remaining share:
+
+Bucket A: The Tax-Free Capital Dividend
+
+$11,197,284 is paid to you out of the Capital Dividend Account (CDA).
+
+Personal Tax: $0. You keep every penny of this.
+
+Bucket B: The Taxable Non-Eligible Dividend
+
+The remaining $12,111,954 is paid to you as a taxable non-eligible dividend.
+
+Personal Tax: Assuming you are in the highest tax bracket in Quebec (approx. 48.7% on non-eligible dividends), you will owe roughly $5,898,521 in personal taxes on this bucket.
+
+The Final True Net to You
+If you sell everything in Year 31 and pull all the cash out for personal use:
+
+Total Cash from Holdco: $23,309,239
+
+Less Personal Dividend Tax: -$5,898,521
+
+Actual After-Tax Money in Your Pocket: ~$17,410,718
+
+So, the $23.3M figure is strictly showing what the corporation distributes to you (which perfectly demonstrates how corporate integration works). To get the true "walk-away" number, you just have to factor in your personal tax bracket on the taxable dividend portion!
+
+i want to intergate the NET to the sahreholder after all taxes
+
+I have generated an updated version of the spreadsheet that integrates the exact final After-Tax Cash to Shareholder.
+
+Here is the new Google Sheet:
+Holdco TRF with Net Shareholder Cash
+Google Sheets icon
+ Holdco TRF...older Cash 
+Google Sheets
+
+Here is what is new in this version:
+
+New Input (Row 7): I've added a field for the Personal Tax Rate (Non-Eligible Div). It defaults to 48.70%, which represents the approximate top marginal tax rate for non-eligible dividends in Quebec. You can change this if you are illustrating for a different province or tax bracket.
+
+New Final Section: At the very bottom (Rows 64–67), I added a "Shareholder Personal Taxes (Integration)" block. This block:
+
+Adds up all the taxable non-eligible dividends you receive.
+
+Calculates your personal tax bill based on the rate in Row 7.
+
+Deducts it to show your true FINAL AFTER-TAX CASH TO SHAREHOLDER.
+
+Effective Total Tax Rate: I added one last line at the bottom that divides your total combined taxes (the Holdco's unrefunded corporate tax + your personal dividend tax) by the total capital gain. It effectively shows your true "integrated" tax rate on that massive $22+ Million gain.
+
+Now when you tweak the growth rate or deposit, you'll see the exact walk-away number in your pocket instantly!
+
+OK know i want to program it that it finds the value in a row based on a value that i am searchinbg (say age 86) in column C
+
+I have generated a new dynamic version of the sheet to do exactly that!
+
+Instead of being hard-coded to the final year, the spreadsheet now uses a Target Disposition Age input and dynamically pulls the correct values from the grid using XLOOKUP.
+
+Here is the updated Google Sheet:
+Dynamic Holdco Total Return Fund Projection
+Google Sheets icon
+ Dynamic Ho...Projection 
+Google Sheets
+
+What I changed:
+
+Added Age Columns & Inputs: I added an input for Starting Age (Row 8) and a Target Disposition Age (Row 9). The main grid now runs for 50 years and tracks the age in Column B.
+
+Dynamic XLOOKUP Formulas: In the "Disposition Detail" section at the bottom, the Total Proceeds and Total ACB no longer point to a specific cell. Instead, they use =XLOOKUP($B$9, $B$12:$B$61, $F$12:$F$61).
+
+This tells the sheet: "Look for the age typed in cell B9 (e.g., 86) inside the Age column (B). When you find it, return the value from the Fund EOY column (F) in that exact same row."
+
+Now, if you change the Target Disposition Age in cell B9 to 70, 75, or 86, the entire bottom section will instantly update to show the exact corporate taxes, dividends, and final after-tax cash for that specific year!
+
+Ok i want to generate a websoite in HTML i can host on GOITHUB that hasa. settongs file woith tax rates
+
+
+
+tax rates should be based on province
+
+
+
+See file attached with CSV make me a simple Settings file I can edit easily in ghotyhub csvb is fine
+
+
+
+input shopuld be
+
+
+
+Age (you start year 1 at age+1 like an inurance ilsutartion)
+
+Deposit Amount'/
+
+You stopped this response
+Ok i want to generate a websoite in HTML i can host on GOITHUB that hasa. settongs file woith tax rates
+
+
+
+tax rates should be based on province
+
+
+
+See file attached with CSV make me a simple Settings file I can edit easily in ghotyhub csvb is fine
+
+
+
+input shopuld be
+
+
+
+Age (you start year 1 at age+1 like an inurance ilsutartion)
+
+Deposit Amount
+
+No of Deposits
+
+Life Exp[actany
+
+
+
+I was thinging of doing this:
+
+
+
+Realized CG
+
+Deferred CG
+
+Fixed Income
+
+
+
+lets do some defaults here :
+
+
+
+Realized CG: 10%
+
+Deferred CG: 8%
+
+Fixed Income 4%
+
+
+
+And I want to make it clear what the NET outoce is NET TO ESTATE at life expcatcny
+
+
+
+ia lso want some presets:
+
+
+
+SP500 TOTAL RETUREN is 100% Deferred CG at 8%
+
+BALANCED is as descrivbed anbvove (Default)
+
+FIXED INCOME is 100% Fixed income at 4%
+
+
+
+Should be clean anbd veru profesional and academic looking
+
+I have generated a clean, professional, and academic-looking HTML application that perfectly calculates the Net-to-Estate value based on your tax settings and allocation preferences!
+
+Here are the files:
+Your HTML application file is ready
+HTML icon
+ index 
+HTML
+
+Your CSV settings file is ready
+CSV icon
+ settings 
+CSV
+
+How to host this on GitHub Pages:
+Go to GitHub and create a new repository (e.g., estate-calculator).
+
+Upload both index.html and settings.csv directly into the repository.
+
+Go to the repository Settings > Pages.
+
+Under "Build and deployment," set the Source to Deploy from a branch, select the main branch, and click Save.
+
+Within a minute or two, your site will be live at https://[your-username].github.io/estate-calculator.
+
+Features included in this app:
+Dynamic Settings File: It uses JavaScript fetch('settings.csv') to automatically load your exact tax rates. You can edit the CSV file right inside GitHub, commit the changes, and the website will automatically use the new rates!
+
+(Note: I also built in a hidden "fallback" so if someone downloads the HTML file and opens it locally without a web server, it will still work using the default rates from your CSV).
+
+Corporate Integration: If "Corporate" is selected, the engine perfectly calculates the Corporate Tax, tracks Cumulative CDA and RDTOH, triggers the exact dividends to the estate at life expectancy, and applies the personal Dividend tax rate to find the exact net cash in pocket.
+
+Asset Allocation: Calculates the independent yearly taxation drag of Fixed Income (fully taxed) and Realized Capital Gains (50% included), alongside the tax-deferred compounding of Deferred CGs.
+
+Presets as Requested: Clicking "Balanced" sets it to 34% Deferred / 33% Realized / 33% Fixed. Clicking "S&P 500" jumps to 100% Deferred, and "Fixed Income" jumps to 100% Fixed.
+
+Clean UI: Styled with deep blues, slate grays, and serif headers (Merriweather) to give it a highly credible and academic finish.
+
+
+
+
+Your Armstrong Financial chats aren’t used to improve our models. Gemini is AI and can make mistakes. Your privacy & GeminiOpens in a new window
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio & Estate Tax Simulator</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --accent: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        header h1 {
+            font-family: 'Merriweather', Georgia, serif;
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 0.5rem 0 0 0;
+            color: #cbd5e1;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .card h2 {
+            font-family: 'Merriweather', Georgia, serif;
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+        }
+
+        input, select {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--primary-light);
+            font-size: 0.875rem;
+        }
+
+        td input {
+            width: 80px;
+            padding: 0.5rem;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-main);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        button:hover:not(.active) {
+            background: #e2e8f0;
+        }
+
+        .results-box {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-weight: 400;
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        .results-box .big-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            font-family: 'Merriweather', Georgia, serif;
+            color: #10b981; /* Emerald green */
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            padding: 1.25rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-card .label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        #alloc-warning {
+            color: #ef4444;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .status-bar {
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="status" class="status-bar">Loading settings.csv...</div>
+
+    <header>
+        <h1>Estate & Tax Projection Engine</h1>
+        <p>Analyze the Net-to-Estate value across different asset allocation strategies.</p>
+    </header>
+
+    <div class="container">
+        <!-- LEFT COLUMN: INPUTS -->
+        <div class="card">
+            <h2>Client Profile & Settings</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Province</label>
+                    <select id="province"></select>
+                </div>
+                <div class="form-group">
+                    <label>Owner Type</label>
+                    <select id="owner">
+                        <option value="Corporate">Corporate (Holdco)</option>
+                        <option value="Personal">Personal</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Current Age</label>
+                    <input type="number" id="age" value="55" min="18" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Life Expectancy</label>
+                    <input type="number" id="le" value="86" min="18" max="120">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Annual Deposit ($)</label>
+                    <input type="number" id="deposit" value="100000" step="1000">
+                </div>
+                <div class="form-group">
+                    <label>No. of Deposits (Years)</label>
+                    <input type="number" id="years" value="10" min="1">
+                </div>
+            </div>
+
+            <h2>Asset Allocation & Returns</h2>
+            
+            <label>Select Preset Portfolio:</label>
+            <div class="preset-buttons">
+                <button type="button" class="preset-btn active" data-preset="balanced">Balanced (Default)</button>
+                <button type="button" class="preset-btn" data-preset="sp500">S&P 500 (Total Return)</button>
+                <button type="button" class="preset-btn" data-preset="fixed">Fixed Income</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Asset Class</th>
+                            <th>Allocation (%)</th>
+                            <th>Target Return (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Deferred Capital Gains<br><small style="color:var(--text-muted)">Total Return Funds</small></td>
+                            <td><input type="number" id="allocDcg" value="34" class="alloc-input"></td>
+                            <td><input type="number" id="rateDcg" value="8" step="0.1" class="rate-input"></td>
+                        </tr>
+                        <tr>
+                            <td>Realized Capital Gains<br><small style="color:var(--text-muted)">Active Trading/Turnover</small></td>
+                            <td><input type="number" id="allocRcg" value="33" class="alloc-input"></td>
+                            <td><input type="number" id="rateRcg" value="10" step="0.1" class="rate-input"></td>
+                        </tr>
+                        <tr>
+                            <td>Fixed Income<br><small style="color:var(--text-muted)">GICs, Bonds, Interest</small></td>
+                            <td><input type="number" id="allocFi" value="33" class="alloc-input"></td>
+                            <td><input type="number" id="rateFi" value="4" step="0.1" class="rate-input"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="alloc-warning">⚠️ Total allocation must equal 100%. Currently: <span id="alloc-total">100</span>%</div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: RESULTS -->
+        <div>
+            <div class="card" style="position: sticky; top: 2rem;">
+                <h2>Projection Results</h2>
+                
+                <div class="results-box">
+                    <h3>Final Net Cash to Estate (After All Taxes)</h3>
+                    <p class="big-number" id="resNetEstate">$0</p>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #94a3b8;">At Life Expectancy (Age <span id="resAge">86</span>)</p>
+                </div>
+
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="label">Total Capital Contributed</div>
+                        <div class="value" id="resContributed">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Gross Portfolio (Pre-Tax)</div>
+                        <div class="value" id="resGross">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Total Estate Taxes Paid</div>
+                        <div class="value" id="resTaxes" style="color: #ef4444;">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Effective Estate Tax Rate</div>
+                        <div class="value" id="resTaxRate">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fallback data in case settings.csv cannot be fetched (e.g. running locally via file:///)
+        const fallbackTaxData = [
+            {Province: 'QC', Owner: 'Personal', TaxRate: 0.5331, Inclusion: 0.5, DividendE: 0.4011, DividendNE: 0.4870, RDTOH: 0},
+            {Province: 'QC', Owner: 'Corporate', TaxRate: 0.5017, Inclusion: 0.5, DividendE: 0.3833, DividendNE: 0.3833, RDTOH: 0.3067},
+            {Province: 'ON', Owner: 'Personal', TaxRate: 0.5353, Inclusion: 0.5, DividendE: 0.4011, DividendNE: 0.4774, RDTOH: 0},
+            {Province: 'ON', Owner: 'Corporate', TaxRate: 0.5017, Inclusion: 0.5, DividendE: 0.3833, DividendNE: 0.3833, RDTOH: 0.3067}
+        ];
+
+        let taxData = [];
+
+        // Formatting utilities
+        const formatCurrency = (num) => new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(num);
+        const parsePercent = (str) => parseFloat(str.replace('%', '')) / 100;
+
+        // Initialize application
+        async function init() {
+            try {
+                const response = await fetch('settings.csv');
+                if (!response.ok) throw new Error("Could not load settings.csv");
+                const text = await response.text();
+                parseCSV(text);
+                document.getElementById('status').innerText = "✅ settings.csv loaded successfully.";
+                document.getElementById('status').style.background = "#dcfce7";
+                document.getElementById('status').style.color = "#166534";
+            } catch (err) {
+                console.warn(err);
+                taxData = fallbackTaxData;
+                document.getElementById('status').innerText = "⚠️ Could not load settings.csv (running locally without server). Using fallback defaults.";
+                document.getElementById('status').style.background = "#fef08a";
+                document.getElementById('status').style.color = "#854d0e";
+            }
+            populateDropdowns();
+            attachEventListeners();
+            calculate();
+        }
+
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            taxData = [];
+            
+            for(let i=1; i<lines.length; i++) {
+                if(!lines[i].trim()) continue;
+                const vals = lines[i].split(',').map(v => v.trim());
+                let row = {};
+                headers.forEach((h, index) => {
+                    let val = vals[index];
+                    if (val && val.includes('%')) val = parsePercent(val);
+                    else if (!isNaN(parseFloat(val)) && h !== 'Province' && h !== 'Owner') val = parseFloat(val);
+                    row[h] = val;
+                });
+                // Ensure field names match our expectations
+                taxData.push({
+                    Province: row['Province'],
+                    Owner: row['Owner'],
+                    TaxRate: row['Tax Rate'],
+                    Inclusion: row['Inclusion'],
+                    DividendE: row['Dividend-E'],
+                    DividendNE: row['Dividend-NE'],
+                    RDTOH: row['RDTOH'] || 0
+                });
+            }
+        }
+
+        function populateDropdowns() {
+            const provSelect = document.getElementById('province');
+            const provs = [...new Set(taxData.map(d => d.Province))];
+            provSelect.innerHTML = '';
+            provs.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = p;
+                provSelect.appendChild(opt);
+            });
+        }
+
+        function attachEventListeners() {
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => input.addEventListener('input', calculate));
+
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    applyPreset(this.dataset.preset);
+                });
+            });
+        }
+
+        function applyPreset(preset) {
+            if (preset === 'balanced') {
+                document.getElementById('allocDcg').value = 34;
+                document.getElementById('allocRcg').value = 33;
+                document.getElementById('allocFi').value = 33;
+            } else if (preset === 'sp500') {
+                document.getElementById('allocDcg').value = 100;
+                document.getElementById('allocRcg').value = 0;
+                document.getElementById('allocFi').value = 0;
+            } else if (preset === 'fixed') {
+                document.getElementById('allocDcg').value = 0;
+                document.getElementById('allocRcg').value = 0;
+                document.getElementById('allocFi').value = 100;
+            }
+            calculate();
+        }
+
+        function getTaxRow(prov, owner) {
+            return taxData.find(d => d.Province === prov && d.Owner === owner);
+        }
+
+        function calculate() {
+            // Get Allocation sum
+            const allocDcg = parseFloat(document.getElementById('allocDcg').value) || 0;
+            const allocRcg = parseFloat(document.getElementById('allocRcg').value) || 0;
+            const allocFi = parseFloat(document.getElementById('allocFi').value) || 0;
+            const totalAlloc = allocDcg + allocRcg + allocFi;
+            
+            document.getElementById('alloc-total').innerText = totalAlloc;
+            const warn = document.getElementById('alloc-warning');
+            if(totalAlloc !== 100) {
+                warn.style.display = 'block';
+                return; // Stop calc if not 100%
+            } else {
+                warn.style.display = 'none';
+            }
+
+            // Rates (convert to decimal)
+            const rateDcg = (parseFloat(document.getElementById('rateDcg').value) || 0) / 100;
+            const rateRcg = (parseFloat(document.getElementById('rateRcg').value) || 0) / 100;
+            const rateFi = (parseFloat(document.getElementById('rateFi').value) || 0) / 100;
+
+            // Basic Inputs
+            const age = parseInt(document.getElementById('age').value);
+            const le = parseInt(document.getElementById('le').value);
+            const deposit = parseFloat(document.getElementById('deposit').value);
+            const numDeposits = parseInt(document.getElementById('years').value);
+            const prov = document.getElementById('province').value;
+            const owner = document.getElementById('owner').value;
+            const isCorp = owner === 'Corporate';
+
+            document.getElementById('resAge').innerText = le;
+
+            // Tax Settings
+            const tData = getTaxRow(prov, owner);
+            const personalTData = getTaxRow(prov, 'Personal'); // Needed for corp integration
+            if (!tData || !personalTData) return;
+
+            const tr = tData.TaxRate;
+            const inc = tData.Inclusion;
+            const rdtohRate = tData.RDTOH;
+            const persDivNERate = personalTData.DividendNE;
+
+            // Simulation Variables
+            let valDcg = 0, valRcg = 0, valFi = 0;
+            let acbDcg = 0;
+            let cumCDA = 0;
+            let cumRDTOH = 0;
+            let totalContributed = 0;
+
+            const yearsToRun = le - age;
+
+            // Yearly Loop
+            for (let y = 1; y <= yearsToRun; y++) {
+                let currentDep = (y <= numDeposits) ? deposit : 0;
+                totalContributed += currentDep;
+
+                let depDcg = currentDep * (allocDcg / 100);
+                let depRcg = currentDep * (allocRcg / 100);
+                let depFi = currentDep * (allocFi / 100);
+
+                // Fixed Income (Taxed annually)
+                let fiGrowth = (valFi + depFi) * rateFi;
+                let fiTax = fiGrowth * tr;
+                valFi += depFi + fiGrowth - fiTax;
+                if (isCorp) cumRDTOH += fiGrowth * rdtohRate;
+
+                // Realized CG (Taxed annually based on inclusion)
+                let rcgGrowth = (valRcg + depRcg) * rateRcg;
+                let rcgTaxable = rcgGrowth * inc;
+                let rcgTax = rcgTaxable * tr;
+                valRcg += depRcg + rcgGrowth - rcgTax;
+                if (isCorp) {
+                    cumRDTOH += rcgTaxable * rdtohRate;
+                    cumCDA += (rcgGrowth - rcgTaxable);
+                }
+
+                // Deferred CG (Tax Deferred)
+                let dcgGrowth = (valDcg + depDcg) * rateDcg;
+                valDcg += depDcg + dcgGrowth;
+                acbDcg += depDcg;
+            }
+
+            // AT DEATH - Liquidation
+            let grossPortfolio = valFi + valRcg + valDcg;
+            let netToEstate = 0;
+            let finalEstateTax = 0;
+
+            let dcgUnrealized = valDcg - acbDcg;
+            // Prevent negative taxable gain if underwater
+            if (dcgUnrealized < 0) dcgUnrealized = 0; 
+            
+            let dcgTaxable = dcgUnrealized * inc;
+            let dcgCorpTax = dcgTaxable * tr;
+
+            if (isCorp) {
+                cumRDTOH += dcgTaxable * rdtohRate;
+                cumCDA += (dcgUnrealized - dcgTaxable);
+
+                let totalCorpCash = grossPortfolio - dcgCorpTax;
+
+                let capDiv = cumCDA;
+                let divForRDTOH = cumRDTOH / 0.3833;
+                let refund = cumRDTOH;
+
+                let remainingCash = totalCorpCash - capDiv - divForRDTOH + refund;
+                let nonEligDiv = Math.max(0, divForRDTOH + remainingCash);
+                
+                let personalTax = nonEligDiv * persDivNERate;
+                
+                netToEstate = capDiv + nonEligDiv - personalTax;
+                finalEstateTax = dcgCorpTax + personalTax; // Only tracking the final estate liquidation taxes
+            } else {
+                // Personal
+                let personalTax = dcgTaxable * tr;
+                netToEstate = grossPortfolio - personalTax;
+                finalEstateTax = personalTax;
+            }
+
+            // Update UI
+            document.getElementById('resNetEstate').innerText = formatCurrency(netToEstate);
+            document.getElementById('resContributed').innerText = formatCurrency(totalContributed);
+            document.getElementById('resGross').innerText = formatCurrency(grossPortfolio);
+            document.getElementById('resTaxes').innerText = formatCurrency(finalEstateTax);
+            
+            // Effective tax rate on the final liquidation event (estate tax / unrealized gain)
+            let effectiveRate = dcgUnrealized > 0 ? (finalEstateTax / dcgUnrealized) * 100 : 0;
+            document.getElementById('resTaxRate').innerText = effectiveRate.toFixed(1) + '%';
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
+index.html
+Displaying index.html.
