@@ -209,7 +209,7 @@
             <div id="alloc-warning">*** ERR: WGTS != 100% (SUM: <span id="alloc-total">100</span>%) ***</div>
             
             <button id="runBtn" style="width: 100%; padding: 10px; margin-top: 10px; font-weight: bold; font-size: 14px; background: var(--fg); color: var(--bg);">>> EXECUTE BATCH JOB</button>
-            <button id="exportBtn" class="export-btn">[ F6: EXPORT AUDIT EXCEL ]</button>
+            <button id="exportBtn" class="export-btn">[ F6: EXPORT EXCEL BACKUP ]</button>
         </div>
 
         <!-- RIGHT PANEL: OUTPUT & LEDGER -->
@@ -356,7 +356,7 @@
             document.getElementById('province').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
             document.getElementById('owner').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
             document.getElementById('runBtn').addEventListener('click', calculate);
-            document.getElementById('exportBtn').addEventListener('click', exportAuditExcel);
+            document.getElementById('exportBtn').addEventListener('click', exportExcel);
             
             document.querySelectorAll('input').forEach(input => {
                 input.addEventListener('change', calculate);
@@ -631,14 +631,14 @@
             document.getElementById('status').innerText = "> BATCH JOB COMPLETE. RESULTS READY.";
         }
 
-        async function exportAuditExcel() {
+        async function exportExcel() {
             if (!window.ExcelJS) {
                 document.getElementById('status').innerText = "> ERR: EXCELJS LIBRARY NOT LOADED.";
                 document.getElementById('status').style.color = "var(--danger)";
                 return;
             }
             
-            document.getElementById('status').innerText = "> GENERATING EXCEL AUDIT FILE...";
+            document.getElementById('status').innerText = "> GENERATING EXCEL EXPORT FILE...";
             document.getElementById('status').style.color = "var(--fg)";
 
             const prov = document.getElementById('province').value;
@@ -669,7 +669,7 @@
             const yearsToRun = Math.max(le - age, 1);
 
             const wb = new ExcelJS.Workbook();
-            const ws = wb.addWorksheet('ARMFS Audit');
+            const ws = wb.addWorksheet('ARMFS Export');
 
             // --- STYLES ---
             const headerFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF000080' } }; // Navy
@@ -678,7 +678,7 @@
             const pctFormat = '0.00%';
 
             // --- GLOBALS SECTION ---
-            ws.getCell('A1').value = 'ARMFS INTERACTIVE FUND MODEL - EXCEL AUDIT';
+            ws.getCell('A1').value = 'ARMFS INTERACTIVE FUND MODEL - EXCEL EXPORT';
             ws.getCell('A1').font = { bold: true, size: 14 };
             ws.mergeCells('A1:E1');
 
@@ -846,7 +846,7 @@
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "ARMFS_Interactive_Model_Audit.xlsx";
+            link.download = "ARMFS_Interactive_Model_Export.xlsx";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
