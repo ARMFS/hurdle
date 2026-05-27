@@ -521,9 +521,9 @@
             const isCorp = owner === 'Corporate';
             
             let html = `
-                <div class="tax-settings-row"><span>TAX:</span> <span>${fPct(tData.TaxRate)}</span></div>
-                <div class="tax-settings-row"><span>INC:</span> <span>${fPct(tData.Inclusion)}</span></div>
-                <div class="tax-settings-row"><span>DIV_NE:</span> <span>${fPct(tData.DividendNE)}</span></div>
+                <div class="tax-settings-row"><span>TAX RATE:</span> <span>${fPct(tData.TaxRate)}</span></div>
+                <div class="tax-settings-row"><span>INCLUSION:</span> <span>${fPct(tData.Inclusion)}</span></div>
+                <div class="tax-settings-row"><span>DIV (NE):</span> <span>${fPct(tData.DividendNE)}</span></div>
             `;
             if (isCorp) {
                 html += `<div class="tax-settings-row"><span>RDTOH:</span> <span>${fPct(tData.RDTOH)}</span></div>`;
