@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IBM Terminal Simulator - UL vs Portfolio</title>
-    <!-- Add Chart.js -->
+    <title>ARMFS: Interactive Fund Model</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            /* Classic IBM Blue and Yellow */
             --bg: #0000aa;
             --fg: #ffff55;
             --muted: #aaaa55;
@@ -16,7 +14,7 @@
             --highlight: #0000ff;
             --danger: #ff5555;
             --ok: #55ff55;
-            --chart-line2: #55ffff; /* Cyan for the UL line */
+            --chart-line2: #55ffff;
         }
 
         body {
@@ -29,10 +27,7 @@
             font-size: 14px;
         }
 
-        ::selection {
-            background: var(--fg);
-            color: var(--bg);
-        }
+        ::selection { background: var(--fg); color: var(--bg); }
 
         h1, h2, h3 {
             text-transform: uppercase;
@@ -56,21 +51,10 @@
             font-weight: bold;
         }
 
-        .status-bar {
-            color: var(--ok);
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+        .status-bar { color: var(--ok); margin-bottom: 15px; font-weight: bold; }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 1100px) {
-            .grid-container { grid-template-columns: 1fr; }
-        }
+        .grid-container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+        @media (max-width: 1100px) { .grid-container { grid-template-columns: 1fr; } }
 
         .panel {
             border: 2px solid var(--border);
@@ -81,18 +65,8 @@
             flex-direction: column;
         }
 
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        label {
-            text-transform: uppercase;
-            font-size: 12px;
-            font-weight: bold;
-        }
+        .form-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        label { text-transform: uppercase; font-size: 12px; font-weight: bold; }
 
         input, select, button {
             font-family: "Courier New", Courier, monospace;
@@ -105,196 +79,52 @@
             font-weight: bold;
         }
 
-        input:focus, select:focus {
-            outline: none;
-            background-color: var(--fg);
-            color: var(--bg);
-        }
+        input:focus, select:focus { outline: none; background-color: var(--fg); color: var(--bg); }
+        select { text-align: left; width: 130px; }
+        input[type="number"] { width: 100px; }
 
-        select {
-            text-align: left;
-            width: 130px;
-        }
-        
-        input[type="number"] {
-            width: 100px;
-        }
+        .btn-group { display: flex; gap: 5px; margin: 10px 0; justify-content: flex-end; }
 
-        .btn-group {
-            display: flex;
-            gap: 5px;
-            margin: 10px 0;
-            justify-content: flex-end;
-        }
+        button { cursor: pointer; text-transform: uppercase; font-size: 12px; background-color: var(--bg); }
+        button.active { background-color: var(--fg); color: var(--bg); }
+        button:hover:not(.active) { background-color: var(--highlight); }
 
-        button {
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 12px;
-            background-color: var(--bg);
-        }
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
+        .data-table th, .data-table td { text-align: right; padding: 4px; border-bottom: 1px dashed var(--muted); }
+        .data-table th:first-child, .data-table td:first-child { text-align: left; }
+        .data-table th { color: var(--fg); text-transform: uppercase; border-bottom: 2px solid var(--fg); }
+        .data-table input { width: 60px; border: none; border-bottom: 1px solid var(--border); padding: 0; background: transparent; }
 
-        button.active {
-            background-color: var(--fg);
-            color: var(--bg);
-        }
+        .results-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { border: 1px solid var(--border); padding: 10px; text-align: right; background: var(--highlight); }
+        .stat-box.highlight-box { background-color: var(--fg); color: var(--bg); border: 2px solid var(--fg); }
+        .stat-label { text-transform: uppercase; font-size: 11px; display: block; margin-bottom: 5px; text-align: left; font-weight: bold; }
+        .stat-value { font-size: 18px; font-weight: bold; }
 
-        button:hover:not(.active) {
-            background-color: var(--highlight);
-        }
+        .ledger-container { margin-top: 20px; overflow-x: auto; max-height: 250px; border: 2px solid var(--border); background: var(--bg); flex-grow: 1; }
+        .ledger-table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+        .ledger-table th { position: sticky; top: 0; background: var(--highlight); border-bottom: 2px solid var(--border); padding: 6px 4px; text-align: right; color: var(--fg); z-index: 10; }
+        .ledger-table td { padding: 4px; text-align: right; border-bottom: 1px dashed var(--muted); }
+        .ledger-table th:first-child, .ledger-table td:first-child { text-align: center; }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 12px;
-        }
+        #alloc-warning { color: var(--danger); display: none; font-weight: bold; text-align: right; font-size: 12px; margin-top: 5px; background: var(--bg); padding: 2px; }
 
-        .data-table th, .data-table td {
-            text-align: right;
-            padding: 4px;
-            border-bottom: 1px dashed var(--muted);
-        }
+        .tax-settings-display { font-size: 11px; color: var(--fg); margin-bottom: 15px; border: 1px dashed var(--border); padding: 5px; display: grid; grid-template-columns: 1fr; gap: 5px; background: var(--highlight); }
+        .tax-settings-row { display: flex; justify-content: space-between; }
+        .tax-settings-row span:first-child { color: var(--muted); }
 
-        .data-table th:first-child, .data-table td:first-child {
-            text-align: left;
-        }
+        .chart-container { position: relative; height: 250px; width: 100%; border: 2px solid var(--border); margin-bottom: 20px; background: var(--bg); box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
 
-        .data-table th {
-            color: var(--fg);
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--fg);
-        }
-
-        .data-table input {
-            width: 60px;
-            border: none;
-            border-bottom: 1px solid var(--border);
-            padding: 0;
-            background: transparent;
-        }
-
-        .results-summary {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            border: 1px solid var(--border);
-            padding: 10px;
-            text-align: right;
-            background: var(--highlight);
-        }
-
-        .stat-box.highlight-box {
-            background-color: var(--fg);
-            color: var(--bg);
-            border: 2px solid var(--fg);
-        }
-
-        .stat-label {
-            text-transform: uppercase;
-            font-size: 11px;
-            display: block;
-            margin-bottom: 5px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        /* Ledger specific */
-        .ledger-container {
-            margin-top: 20px;
-            overflow-x: auto;
-            max-height: 250px; /* Reduced to make room for chart */
-            border: 2px solid var(--border);
-            background: var(--bg);
-            flex-grow: 1;
-        }
-
-        .ledger-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-            white-space: nowrap;
-        }
-
-        .ledger-table th {
-            position: sticky;
-            top: 0;
-            background: var(--highlight);
-            border-bottom: 2px solid var(--border);
-            padding: 6px 4px;
-            text-align: right;
-            color: var(--fg);
-            z-index: 10;
-        }
-
-        .ledger-table td {
-            padding: 4px;
-            text-align: right;
-            border-bottom: 1px dashed var(--muted);
-        }
-        
-        .ledger-table th:first-child, .ledger-table td:first-child {
-            text-align: center;
-        }
-
-        #alloc-warning {
-            color: var(--danger);
-            display: none;
-            font-weight: bold;
-            text-align: right;
-            font-size: 12px;
-            margin-top: 5px;
-            background: var(--bg);
-            padding: 2px;
-        }
-
-        .tax-settings-display {
-            font-size: 11px;
-            color: var(--fg);
-            margin-bottom: 15px;
-            border: 1px dashed var(--border);
-            padding: 5px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 5px;
-            background: var(--highlight);
-        }
-        
-        .tax-settings-row {
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .tax-settings-row span:first-child {
-            color: var(--muted);
-        }
-
-        .chart-container {
-            position: relative;
-            height: 250px;
-            width: 100%;
-            border: 2px solid var(--border);
-            margin-bottom: 20px;
-            background: var(--bg);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-        }
+        .export-btn { width: 100%; padding: 8px; margin-top: 10px; font-weight: bold; font-size: 12px; border: 1px dashed var(--fg); background: var(--highlight); }
+        .export-btn:hover { background: var(--bg); }
     </style>
 </head>
 <body>
 
     <div class="terminal-header">
-        <div>SYSTEM: AS/400 TAX ENGINE</div>
+        <div>ARMFS: INTERACTIVE FUND MODEL</div>
         <div>MODE: INTERACTIVE</div>
-        <div id="clock">00:00:00</div>
+        <div id="clock">00:00:00 EST</div>
     </div>
 
     <div id="status" class="status-bar">> AWAITING INSTRUCTIONS...</div>
@@ -330,7 +160,7 @@
             </div>
             <div class="form-group">
                 <label>ANN. DEPOSIT</label>
-                <input type="number" id="deposit" value="100000" step="1000">
+                <input type="number" id="deposit" value="309814" step="1000">
             </div>
             <div class="form-group">
                 <label>DEP. TERM</label>
@@ -338,14 +168,14 @@
             </div>
             <div class="form-group" style="border-top: 1px dashed var(--muted); padding-top: 8px; margin-top: 8px;">
                 <label style="color: var(--chart-line2);">UL FACE AMT.</label>
-                <input type="number" id="ulFace" value="5000000" step="10000" style="color: var(--chart-line2);">
+                <input type="number" id="ulFace" value="11469549" step="10000" style="color: var(--chart-line2);">
             </div>
 
             <h2 style="margin-top: 20px;">[ PF2: ALLOCATION ]</h2>
             
             <div class="btn-group">
-                <button type="button" class="preset-btn active" data-preset="balanced">BALANCED</button>
-                <button type="button" class="preset-btn" data-preset="sp500">SP500</button>
+                <button type="button" class="preset-btn" data-preset="balanced">BALANCED</button>
+                <button type="button" class="preset-btn active" data-preset="sp500">SP500</button>
                 <button type="button" class="preset-btn" data-preset="fixed">FIXED</button>
             </div>
 
@@ -360,17 +190,17 @@
                 <tbody>
                     <tr>
                         <td>DEF_CG</td>
-                        <td><input type="number" id="allocDcg" value="20"></td>
-                        <td><input type="number" id="rateDcg" value="8.0" step="0.1"></td>
+                        <td><input type="number" id="allocDcg" value="100"></td>
+                        <td><input type="number" id="rateDcg" value="8.5" step="0.1"></td>
                     </tr>
                     <tr>
                         <td>REAL_CG</td>
-                        <td><input type="number" id="allocRcg" value="40"></td>
+                        <td><input type="number" id="allocRcg" value="0"></td>
                         <td><input type="number" id="rateRcg" value="10.0" step="0.1"></td>
                     </tr>
                     <tr>
                         <td>FIXED_INC</td>
-                        <td><input type="number" id="allocFi" value="40"></td>
+                        <td><input type="number" id="allocFi" value="0"></td>
                         <td><input type="number" id="rateFi" value="4.0" step="0.1"></td>
                     </tr>
                 </tbody>
@@ -378,6 +208,7 @@
             <div id="alloc-warning">*** ERR: WGTS != 100% (SUM: <span id="alloc-total">100</span>%) ***</div>
             
             <button id="runBtn" style="width: 100%; padding: 10px; margin-top: 10px; font-weight: bold; font-size: 14px; background: var(--fg); color: var(--bg);">>> EXECUTE BATCH JOB</button>
+            <button id="exportBtn" class="export-btn">[ F6: EXPORT AUDIT EXCEL ]</button>
         </div>
 
         <!-- RIGHT PANEL: OUTPUT & LEDGER -->
@@ -439,22 +270,23 @@
     </div>
 
     <script>
-        // Clock
+        // Clock - Update to EST
         setInterval(() => {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
+            const timeString = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: false });
+            document.getElementById('clock').innerText = timeString + ' EST';
         }, 1000);
 
-        // Fallback data
+        // Fallback data with 66.67% Inclusion Rate for 2024+
         const fallbackTaxData = [
-            {Province: 'QC', Owner: 'Personal', TaxRate: 0.5331, Inclusion: 0.5, DividendE: 0.4011, DividendNE: 0.4870, RDTOH: 0},
-            {Province: 'QC', Owner: 'Corporate', TaxRate: 0.5017, Inclusion: 0.5, DividendE: 0.3833, DividendNE: 0.3833, RDTOH: 0.3067},
-            {Province: 'ON', Owner: 'Personal', TaxRate: 0.5353, Inclusion: 0.5, DividendE: 0.4011, DividendNE: 0.4774, RDTOH: 0},
-            {Province: 'ON', Owner: 'Corporate', TaxRate: 0.5017, Inclusion: 0.5, DividendE: 0.3833, DividendNE: 0.3833, RDTOH: 0.3067}
+            {Province: 'QC', Owner: 'Personal', TaxRate: 0.5331, Inclusion: 0.6667, DividendE: 0.4011, DividendNE: 0.4870, RDTOH: 0},
+            {Province: 'QC', Owner: 'Corporate', TaxRate: 0.5017, Inclusion: 0.6667, DividendE: 0.3833, DividendNE: 0.3833, RDTOH: 0.3067},
+            {Province: 'ON', Owner: 'Personal', TaxRate: 0.5353, Inclusion: 0.6667, DividendE: 0.4011, DividendNE: 0.4774, RDTOH: 0},
+            {Province: 'ON', Owner: 'Corporate', TaxRate: 0.5017, Inclusion: 0.6667, DividendE: 0.3833, DividendNE: 0.3833, RDTOH: 0.3067}
         ];
 
         let taxData = [];
-        let chartInstance = null; // Hold chart instance
+        let chartInstance = null; 
 
         // Formatting
         const fCurr = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
@@ -471,7 +303,7 @@
                 document.getElementById('status').innerText = "> STATUS: OK. SETTINGS LOADED.";
             } catch (err) {
                 taxData = fallbackTaxData;
-                document.getElementById('status').innerText = "> WRN: OFFLINE. LOCAL DATA LOADED.";
+                document.getElementById('status').innerText = "> WRN: OFFLINE. LOCAL DATA LOADED (INC 66.67%).";
                 document.getElementById('status').style.color = "var(--danger)";
             }
             populateDropdowns();
@@ -522,8 +354,8 @@
         function attachEventListeners() {
             document.getElementById('province').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
             document.getElementById('owner').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
-            
             document.getElementById('runBtn').addEventListener('click', calculate);
+            document.getElementById('exportBtn').addEventListener('click', exportAuditCSV);
             
             document.querySelectorAll('input').forEach(input => {
                 input.addEventListener('change', calculate);
@@ -542,14 +374,15 @@
             const prov = document.getElementById('province').value;
             const owner = document.getElementById('owner').value;
             const tData = getTaxRow(prov, owner);
-            if(!tData) return;
+            const pData = getTaxRow(prov, 'Personal'); 
+            if(!tData || !pData) return;
             
             const isCorp = owner === 'Corporate';
             
             let html = `
-                <div class="tax-settings-row"><span>TAX RATE:</span> <span>${fPct(tData.TaxRate)}</span></div>
-                <div class="tax-settings-row"><span>INCLUSION:</span> <span>${fPct(tData.Inclusion)}</span></div>
-                <div class="tax-settings-row"><span>DIV (NE):</span> <span>${fPct(tData.DividendNE)}</span></div>
+                <div class="tax-settings-row"><span>TAX:</span> <span>${fPct(tData.TaxRate)}</span></div>
+                <div class="tax-settings-row"><span>INC:</span> <span>${fPct(tData.Inclusion)}</span></div>
+                <div class="tax-settings-row"><span>DIV_NE:</span> <span>${fPct(pData.DividendNE)}</span></div>
             `;
             if (isCorp) {
                 html += `<div class="tax-settings-row"><span>RDTOH:</span> <span>${fPct(tData.RDTOH)}</span></div>`;
@@ -563,10 +396,12 @@
                 document.getElementById('allocDcg').value = 20;
                 document.getElementById('allocRcg').value = 40;
                 document.getElementById('allocFi').value = 40;
+                document.getElementById('rateDcg').value = 8.0;
             } else if (preset === 'sp500') {
                 document.getElementById('allocDcg').value = 100;
                 document.getElementById('allocRcg').value = 0;
                 document.getElementById('allocFi').value = 0;
+                document.getElementById('rateDcg').value = 8.5;
             } else if (preset === 'fixed') {
                 document.getElementById('allocDcg').value = 0;
                 document.getElementById('allocRcg').value = 0;
@@ -581,12 +416,8 @@
 
         function renderChart(labels, netEstateData, ulFaceData) {
             const ctx = document.getElementById('projChart').getContext('2d');
-            
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
+            if (chartInstance) chartInstance.destroy();
 
-            // Customize fonts for IBM terminal style
             Chart.defaults.font.family = '"Courier New", Courier, monospace';
             Chart.defaults.color = '#ffff55';
 
@@ -603,12 +434,12 @@
                             borderWidth: 2,
                             pointRadius: 0,
                             pointHoverRadius: 6,
-                            tension: 0 // straight lines
+                            tension: 0
                         },
                         {
                             label: 'LEVEL UL FACE',
                             data: ulFaceData,
-                            borderColor: '#55ffff', // Cyan
+                            borderColor: '#55ffff',
                             backgroundColor: 'transparent',
                             borderWidth: 2,
                             borderDash: [5, 5],
@@ -621,16 +452,9 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
+                    interaction: { mode: 'index', intersect: false, },
                     plugins: {
-                        legend: {
-                            labels: {
-                                font: { weight: 'bold' }
-                            }
-                        },
+                        legend: { labels: { font: { weight: 'bold' } } },
                         tooltip: {
                             backgroundColor: 'rgba(0,0,170,0.9)',
                             titleColor: '#ffff55',
@@ -650,18 +474,8 @@
                         }
                     },
                     scales: {
-                        x: {
-                            grid: { color: 'rgba(170, 170, 85, 0.3)', tickColor: 'rgba(170, 170, 85, 0.3)' },
-                            title: { display: true, text: 'AGE', color: '#aaaa55' }
-                        },
-                        y: {
-                            grid: { color: 'rgba(170, 170, 85, 0.3)', tickColor: 'rgba(170, 170, 85, 0.3)' },
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + (value / 1000000).toFixed(1) + 'M';
-                                }
-                            }
-                        }
+                        x: { grid: { color: 'rgba(170, 170, 85, 0.3)', tickColor: 'rgba(170, 170, 85, 0.3)' }, title: { display: true, text: 'AGE', color: '#aaaa55' } },
+                        y: { grid: { color: 'rgba(170, 170, 85, 0.3)', tickColor: 'rgba(170, 170, 85, 0.3)' }, ticks: { callback: function(value) { return '$' + (value / 1000000).toFixed(1) + 'M'; } } }
                     }
                 }
             });
@@ -675,12 +489,8 @@
             
             document.getElementById('alloc-total').innerText = totalAlloc;
             const warn = document.getElementById('alloc-warning');
-            if(totalAlloc !== 100) {
-                warn.style.display = 'block';
-                return;
-            } else {
-                warn.style.display = 'none';
-            }
+            if(totalAlloc !== 100) { warn.style.display = 'block'; return; } 
+            else { warn.style.display = 'none'; }
 
             const rateDcg = (parseFloat(document.getElementById('rateDcg').value) || 0) / 100;
             const rateRcg = (parseFloat(document.getElementById('rateRcg').value) || 0) / 100;
@@ -708,24 +518,14 @@
             const persDivNERate = personalTData.DividendNE;
 
             let valDcg = 0, valRcg = 0, valFi = 0;
-            let acbDcg = 0;
-            let cumCDA = 0;
-            let cumRDTOH = 0;
-            let totalContributed = 0;
-
+            let acbDcg = 0, cumCDA = 0, cumRDTOH = 0, totalContributed = 0;
             const yearsToRun = le - age;
             
             const tbody = document.querySelector('#ledgerTable tbody');
             tbody.innerHTML = '';
 
-            let finalNetToEstate = 0;
-            let finalGrossPortfolio = 0;
-            let finalTaxes = 0;
-
-            // Arrays for Chart
-            const chartLabels = [];
-            const chartNetEstate = [];
-            const chartUlFace = [];
+            let finalNetToEstate = 0, finalGrossPortfolio = 0, finalTaxes = 0;
+            const chartLabels = [], chartNetEstate = [], chartUlFace = [];
 
             for (let y = 1; y <= Math.max(yearsToRun, 1); y++) {
                 let currentAge = age + y;
@@ -737,13 +537,11 @@
                 let depRcg = currentDep * (allocRcg / 100);
                 let depFi = currentDep * (allocFi / 100);
 
-                // FI
                 let fiGrowth = (valFi + depFi) * rateFi;
                 let fiTax = fiGrowth * tr;
                 valFi += depFi + fiGrowth - fiTax;
                 if (isCorp) cumRDTOH += fiGrowth * rdtohRate;
 
-                // RCG
                 let rcgGrowth = (valRcg + depRcg) * rateRcg;
                 let rcgTaxable = rcgGrowth * inc;
                 let rcgTax = rcgTaxable * tr;
@@ -753,21 +551,17 @@
                     cumCDA += (rcgGrowth - rcgTaxable);
                 }
 
-                // DCG
                 let dcgGrowth = (valDcg + depDcg) * rateDcg;
                 valDcg += depDcg + dcgGrowth;
                 acbDcg += depDcg;
                 
                 let grossPort = valFi + valRcg + valDcg;
                 
-                // Simulate Liquidation for THIS specific year
                 let dcgUnrealized_y = Math.max(0, valDcg - acbDcg);
                 let dcgTaxable_y = dcgUnrealized_y * inc;
                 let dcgCorpTax_y = dcgTaxable_y * tr;
                 
-                let corpTaxPrint = 0;
-                let persTaxPrint = 0;
-                let netEstatePrint = 0;
+                let corpTaxPrint = 0, persTaxPrint = 0, netEstatePrint = 0;
                 
                 if (isCorp) {
                     let tempRDTOH = cumRDTOH + (dcgTaxable_y * rdtohRate);
@@ -790,7 +584,6 @@
                     netEstatePrint = grossPort - personalTax;
                 }
                 
-                // Chart push
                 chartLabels.push(currentAge);
                 chartNetEstate.push(netEstatePrint);
                 chartUlFace.push(ulFace);
@@ -801,7 +594,6 @@
                     finalTaxes = corpTaxPrint + persTaxPrint;
                 }
 
-                // Add row to ledger
                 let trEl = document.createElement('tr');
                 if (y === yearsToRun) {
                     trEl.style.backgroundColor = "var(--fg)";
@@ -830,14 +622,145 @@
             document.getElementById('resGross').innerText = fCurr(finalGrossPortfolio);
             document.getElementById('resTaxes').innerText = fCurr(finalTaxes);
             
-            // Draw Chart
             renderChart(chartLabels, chartNetEstate, chartUlFace);
 
-            // Scroll ledger to target row
             const ledger = document.querySelector('.ledger-container');
             ledger.scrollTop = ledger.scrollHeight;
             
             document.getElementById('status').innerText = "> BATCH JOB COMPLETE. RESULTS READY.";
+        }
+
+        function exportAuditCSV() {
+            const prov = document.getElementById('province').value;
+            const owner = document.getElementById('owner').value;
+            const isCorp = owner === 'Corporate';
+            
+            const tData = getTaxRow(prov, owner);
+            const pData = getTaxRow(prov, 'Personal');
+            if(!tData || !pData) return;
+
+            const tr = tData.TaxRate;
+            const inc = tData.Inclusion;
+            const rdtohRate = isCorp ? tData.RDTOH : 0;
+            const persDivNERate = pData.DividendNE;
+            const refundRate = 0.3833;
+
+            const allocFi = parseFloat(document.getElementById('allocFi').value) / 100;
+            const rateFi = parseFloat(document.getElementById('rateFi').value) / 100;
+            const allocRcg = parseFloat(document.getElementById('allocRcg').value) / 100;
+            const rateRcg = parseFloat(document.getElementById('rateRcg').value) / 100;
+            const allocDcg = parseFloat(document.getElementById('allocDcg').value) / 100;
+            const rateDcg = parseFloat(document.getElementById('rateDcg').value) / 100;
+
+            const age = parseInt(document.getElementById('age').value);
+            const le = parseInt(document.getElementById('le').value);
+            const deposit = parseFloat(document.getElementById('deposit').value);
+            const numDeposits = parseInt(document.getElementById('years').value);
+            const yearsToRun = Math.max(le - age, 1);
+
+            let csv = "ARMFS INTERACTIVE FUND MODEL - AUDIT EXCEL WITH FORMULAS\n\n";
+            csv += "--- GLOBALS ---\n";
+            csv += `Corp Tax Rate,${tr}\n`;               // B3
+            csv += `Inclusion Rate,${inc}\n`;              // B4
+            csv += `RDTOH Rate,${rdtohRate}\n`;            // B5
+            csv += `Div Refund Rate,${refundRate}\n`;      // B6
+            csv += `Personal Div Tax,${persDivNERate}\n`;  // B7
+            csv += `FI Alloc,${allocFi}\n`;                // B8
+            csv += `FI Rate,${rateFi}\n`;                  // B9
+            csv += `RCG Alloc,${allocRcg}\n`;              // B10
+            csv += `RCG Rate,${rateRcg}\n`;                // B11
+            csv += `DCG Alloc,${allocDcg}\n`;              // B12
+            csv += `DCG Rate,${rateDcg}\n`;                // B13
+            csv += "\n";
+
+            const headers = [
+                "Year", "Age", "Deposit", "Dep_FI", "FI_BOY", "FI_Growth", "FI_Tax", "FI_EOY",
+                "Dep_RCG", "RCG_BOY", "RCG_Growth", "RCG_Taxable", "RCG_Tax", "RCG_EOY",
+                "Dep_DCG", "DCG_BOY", "DCG_Growth", "DCG_EOY", "DCG_ACB",
+                "Gross_Portfolio", "Cum_CDA", "Cum_RDTOH",
+                "Liq_DCG_Unrealized", "Liq_DCG_Taxable", "Liq_Corp_Tax", "Liq_Final_CDA", "Liq_Final_RDTOH",
+                "Liq_Corp_Cash", "Liq_Div_for_Refund", "Liq_Remaining_Cash", "Liq_Total_NonElig_Div",
+                "Liq_Personal_Tax", "NET_CASH_TO_ESTATE"
+            ];
+            csv += headers.join(",") + "\n";
+
+            for (let y = 1; y <= yearsToRun; y++) {
+                let rowNum = 15 + y; // Headers are row 15 in this setup
+                let prevRow = rowNum - 1;
+                let currentAge = age + y;
+                let currentDep = (y <= numDeposits) ? deposit : 0;
+
+                let row = [];
+                row.push(y); // A
+                row.push(currentAge); // B
+                row.push(currentDep); // C
+                row.push(`=C${rowNum}*$B$8`); // D: Dep_FI
+                row.push(y === 1 ? 0 : `=H${prevRow}`); // E: FI_BOY
+                row.push(`=(E${rowNum}+D${rowNum})*$B$9`); // F: FI_Growth
+                row.push(`=F${rowNum}*$B$3`); // G: FI_Tax
+                row.push(`=E${rowNum}+D${rowNum}+F${rowNum}-G${rowNum}`); // H: FI_EOY
+
+                row.push(`=C${rowNum}*$B$10`); // I: Dep_RCG
+                row.push(y === 1 ? 0 : `=N${prevRow}`); // J: RCG_BOY
+                row.push(`=(J${rowNum}+I${rowNum})*$B$11`); // K: RCG_Growth
+                row.push(`=K${rowNum}*$B$4`); // L: RCG_Taxable
+                row.push(`=L${rowNum}*$B$3`); // M: RCG_Tax
+                row.push(`=J${rowNum}+I${rowNum}+K${rowNum}-M${rowNum}`); // N: RCG_EOY
+
+                row.push(`=C${rowNum}*$B$12`); // O: Dep_DCG
+                row.push(y === 1 ? 0 : `=R${prevRow}`); // P: DCG_BOY
+                row.push(`=(P${rowNum}+O${rowNum})*$B$13`); // Q: DCG_Growth
+                row.push(`=P${rowNum}+O${rowNum}+Q${rowNum}`); // R: DCG_EOY
+                row.push(y === 1 ? `=O${rowNum}` : `=S${prevRow}+O${rowNum}`); // S: DCG_ACB
+
+                row.push(`=H${rowNum}+N${rowNum}+R${rowNum}`); // T: Gross_Portfolio
+
+                if (isCorp) {
+                    row.push(y === 1 ? `=K${rowNum}-L${rowNum}` : `=U${prevRow}+(K${rowNum}-L${rowNum})`); // U: Cum_CDA
+                    row.push(y === 1 ? `=F${rowNum}*$B$5+L${rowNum}*$B$5` : `=V${prevRow}+(F${rowNum}*$B$5+L${rowNum}*$B$5)`); // V: Cum_RDTOH
+
+                    row.push(`=MAX(0, R${rowNum}-S${rowNum})`); // W: Liq_DCG_Unrealized
+                    row.push(`=W${rowNum}*$B$4`); // X: Liq_DCG_Taxable
+                    row.push(`=X${rowNum}*$B$3`); // Y: Liq_Corp_Tax
+
+                    row.push(`=U${rowNum}+(W${rowNum}-X${rowNum})`); // Z: Liq_Final_CDA
+                    row.push(`=V${rowNum}+(X${rowNum}*$B$5)`); // AA: Liq_Final_RDTOH
+
+                    row.push(`=T${rowNum}-Y${rowNum}`); // AB: Liq_Corp_Cash
+                    row.push(`=AA${rowNum}/$B$6`); // AC: Liq_Div_for_Refund
+                    row.push(`=MAX(0, AB${rowNum}-Z${rowNum}-AC${rowNum}+AA${rowNum})`); // AD: Liq_Remaining_Cash
+                    row.push(`=AC${rowNum}+AD${rowNum}`); // AE: Liq_Total_NonElig_Div
+                    row.push(`=AE${rowNum}*$B$7`); // AF: Liq_Personal_Tax
+                    row.push(`=Z${rowNum}+AE${rowNum}-AF${rowNum}`); // AG: NET_CASH_TO_ESTATE
+
+                } else {
+                    row.push(0); // U: Cum_CDA
+                    row.push(0); // V: Cum_RDTOH
+                    row.push(`=MAX(0, R${rowNum}-S${rowNum})`); // W: Liq_DCG_Unrealized
+                    row.push(`=W${rowNum}*$B$4`); // X: Liq_DCG_Taxable
+                    row.push(`=X${rowNum}*$B$3`); // Y: Liq_Corp_Tax (Acts as Personal Tax)
+                    row.push(0); // Z
+                    row.push(0); // AA
+                    row.push(0); // AB
+                    row.push(0); // AC
+                    row.push(0); // AD
+                    row.push(0); // AE
+                    row.push(`=Y${rowNum}`); // AF: Liq_Personal_Tax
+                    row.push(`=T${rowNum}-Y${rowNum}`); // AG: NET_CASH_TO_ESTATE
+                }
+
+                csv += row.join(",") + "\n";
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "ARMFS_Audit_Export.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         window.onload = init;
