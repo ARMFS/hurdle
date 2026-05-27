@@ -3,359 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio & Estate Tax Simulator</title>
+    <title>Bloomberg/IBM Terminal Simulator</title>
     <style>
         :root {
-            --bg: #ffffff;
-            --fg: #000000;
-            --muted: #555555;
-            --border: #000000;
+            --bg: #000000;
+            --fg: #ff9900; /* Amber phosphor / Bloomberg orange */
+            --muted: #885500;
+            --border: #ff9900;
+            --highlight: #331a00;
+            --danger: #ff0000;
+            --ok: #00ff00;
         }
 
         body {
             font-family: "Courier New", Courier, monospace;
             background-color: var(--bg);
             color: var(--fg);
-            line-height: 1.5;
-            margin: 0 auto;
-            padding: 2rem;
-            max-width: 1000px;
-        }
-
-        header {
-            margin-bottom: 3rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 1rem;
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-            margin: 0 0 0.5rem 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        header p {
+            line-height: 1.4;
             margin: 0;
-            color: var(--muted);
-            font-size: 0.9rem;
+            padding: 1rem;
+            font-size: 14px;
+        }
+
+        ::selection {
+            background: var(--fg);
+            color: var(--bg);
+        }
+
+        h1, h2, h3 {
+            text-transform: uppercase;
+            font-weight: normal;
+            margin: 0 0 10px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        h1 { font-size: 18px; margin-bottom: 20px; }
+        h2 { font-size: 16px; margin-top: 20px; }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 5px;
+            margin-bottom: 20px;
         }
 
         .status-bar {
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-            padding: 0.5rem;
+            color: var(--ok);
+            margin-bottom: 15px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-container { grid-template-columns: 1fr; }
+        }
+
+        .panel {
             border: 1px solid var(--border);
-            background: #f9f9f9;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-        }
-
-        @media (max-width: 800px) {
-            .container { grid-template-columns: 1fr; }
-        }
-
-        h2 {
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 0.5rem;
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            padding: 15px;
+            background: rgba(255, 153, 0, 0.03);
         }
 
         .form-group {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
         label {
-            font-size: 0.85rem;
             text-transform: uppercase;
-            margin-bottom: 0.25rem;
-            color: var(--muted);
+            font-size: 12px;
         }
 
         input, select, button {
             font-family: "Courier New", Courier, monospace;
-            font-size: 1rem;
-            padding: 0.4rem;
-            border: 1px solid var(--border);
             background-color: var(--bg);
             color: var(--fg);
-            border-radius: 0; /* Remove rounded corners */
-            box-sizing: border-box;
+            border: 1px solid var(--muted);
+            padding: 2px 5px;
+            font-size: 14px;
+            text-align: right;
         }
 
         input:focus, select:focus {
             outline: none;
-            background-color: #f0f0f0;
+            border-color: var(--fg);
+            background-color: var(--highlight);
         }
 
-        /* Preset Buttons */
-        .preset-buttons {
+        select {
+            text-align: left;
+            width: 120px;
+        }
+        
+        input[type="number"] {
+            width: 100px;
+        }
+
+        .btn-group {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+            justify-content: flex-end;
         }
 
         button {
             cursor: pointer;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 12px;
         }
 
         button.active {
             background-color: var(--fg);
             color: var(--bg);
+            font-weight: bold;
         }
 
         button:hover:not(.active) {
-            background-color: #e0e0e0;
+            background-color: var(--highlight);
         }
 
-        /* Tables */
-        table {
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 0.5rem;
+            margin-bottom: 15px;
+            font-size: 12px;
         }
 
-        th, td {
-            padding: 0.5rem 0;
+        .data-table th, .data-table td {
+            text-align: right;
+            padding: 4px;
+            border-bottom: 1px dotted var(--muted);
+        }
+
+        .data-table th:first-child, .data-table td:first-child {
             text-align: left;
-            border-bottom: 1px solid var(--border);
         }
 
-        th {
+        .data-table th {
+            color: var(--muted);
             text-transform: uppercase;
-            font-size: 0.85rem;
-            font-weight: normal;
-            color: var(--muted);
-            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--fg);
         }
 
-        td input {
-            width: 100%;
-            max-width: 80px;
+        .data-table input {
+            width: 60px;
+            border: none;
+            border-bottom: 1px solid var(--muted);
+            padding: 0;
         }
 
-        .note {
+        .results-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: right;
+        }
+
+        .stat-box.highlight {
+            background-color: var(--fg);
+            color: var(--bg);
+        }
+
+        .stat-label {
+            text-transform: uppercase;
+            font-size: 10px;
             display: block;
-            font-size: 0.75rem;
-            color: var(--muted);
-            margin-top: 0.25rem;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Ledger specific */
+        .ledger-container {
+            margin-top: 20px;
+            overflow-x: auto;
+            max-height: 400px;
+            border: 1px solid var(--border);
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .ledger-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--fg);
+            border-top: none;
+            padding: 4px;
+            text-align: right;
+            color: var(--fg);
+        }
+
+        .ledger-table td {
+            padding: 2px 4px;
+            text-align: right;
+            border-bottom: 1px dotted var(--muted);
+        }
+        
+        .ledger-table th:first-child, .ledger-table td:first-child {
+            text-align: center;
         }
 
         #alloc-warning {
-            color: var(--fg);
-            background: var(--border);
-            color: var(--bg);
-            padding: 0.5rem;
-            font-size: 0.85rem;
-            margin-top: 1rem;
-            text-transform: uppercase;
+            color: var(--danger);
             display: none;
-        }
-
-        /* Results Display */
-        .results-box {
-            border: 2px solid var(--border);
-            padding: 2rem;
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .results-box h3 {
-            font-size: 1rem;
-            margin: 0 0 1rem 0;
-            text-transform: uppercase;
-        }
-
-        .results-box .big-number {
-            font-size: 2.5rem;
             font-weight: bold;
-            margin: 0;
-            letter-spacing: -1px;
-        }
-
-        .results-box p {
-            margin: 0.5rem 0 0 0;
-            font-size: 0.85rem;
-            color: var(--muted);
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0;
-            border-top: 1px solid var(--border);
-            border-left: 1px solid var(--border);
-        }
-
-        .stat-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-        }
-
-        .stat-row > div {
-            border-right: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            padding: 0.75rem 1rem;
-        }
-
-        .stat-row .label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-
-        .stat-row .value {
             text-align: right;
-            font-weight: bold;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .tax-settings-display {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 15px;
+            border: 1px dotted var(--muted);
+            padding: 5px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+        
+        .tax-settings-display div {
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
 <body>
 
-    <div id="status" class="status-bar">[SYSTEM] Initializing...</div>
+    <div class="terminal-header">
+        <div>SYS_ID: EST_TAX_PROJ_v2.0</div>
+        <div>TICKER: SIMULATION_ACTIVE</div>
+        <div id="clock">00:00:00</div>
+    </div>
 
-    <header>
-        <h1>Estate & Tax Projection Engine</h1>
-        <p>Asset Allocation & Net-to-Estate Value Simulator</p>
-    </header>
+    <div id="status" class="status-bar">> INITIALIZING DATA LINK...</div>
 
-    <div class="container">
-        <!-- LEFT COLUMN: INPUTS -->
-        <div>
-            <h2>I. Profile Specifications</h2>
+    <div class="grid-container">
+        <!-- LEFT PANEL: INPUTS -->
+        <div class="panel">
+            <h2>[ CMD: INPUTS ]</h2>
             
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Province</label>
-                    <select id="province"></select>
-                </div>
-                <div class="form-group">
-                    <label>Entity Type</label>
-                    <select id="owner">
-                        <option value="Corporate">Corporate (Holdco)</option>
-                        <option value="Personal">Personal</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                <label>PROVINCE</label>
+                <select id="province"></select>
+            </div>
+            <div class="form-group">
+                <label>ENTITY TYPE</label>
+                <select id="owner">
+                    <option value="Corporate">CORP (HOLDCO)</option>
+                    <option value="Personal">PERSONAL</option>
+                </select>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Current Age</label>
-                    <input type="number" id="age" value="55" min="18" max="100">
-                </div>
-                <div class="form-group">
-                    <label>Life Expectancy</label>
-                    <input type="number" id="le" value="86" min="18" max="120">
-                </div>
+            <div class="tax-settings-display" id="taxDisplay">
+                <!-- Populated by JS -->
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Annual Deposit ($)</label>
-                    <input type="number" id="deposit" value="100000" step="1000">
-                </div>
-                <div class="form-group">
-                    <label>Deposit Term (Yrs)</label>
-                    <input type="number" id="years" value="10" min="1">
-                </div>
+            <div class="form-group">
+                <label>CURRENT AGE</label>
+                <input type="number" id="age" value="55" min="18" max="100">
+            </div>
+            <div class="form-group">
+                <label>LIFE EXP.</label>
+                <input type="number" id="le" value="86" min="18" max="120">
+            </div>
+            <div class="form-group">
+                <label>ANN. DEPOSIT</label>
+                <input type="number" id="deposit" value="100000" step="1000">
+            </div>
+            <div class="form-group">
+                <label>DEP. TERM</label>
+                <input type="number" id="years" value="10" min="1">
             </div>
 
-            <h2 style="margin-top: 2rem;">II. Asset Allocation</h2>
+            <h2 style="margin-top: 20px;">[ CMD: ALLOCATION ]</h2>
             
-            <div class="preset-buttons">
-                <button type="button" class="preset-btn active" data-preset="balanced">[ Balanced ]</button>
-                <button type="button" class="preset-btn" data-preset="sp500">[ S&P 500 ]</button>
-                <button type="button" class="preset-btn" data-preset="fixed">[ Fixed Inc ]</button>
+            <div class="btn-group">
+                <button type="button" class="preset-btn active" data-preset="balanced">BALANCED</button>
+                <button type="button" class="preset-btn" data-preset="sp500">SP500</button>
+                <button type="button" class="preset-btn" data-preset="fixed">FIXED</button>
             </div>
 
-            <table>
+            <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Asset Class</th>
-                        <th>Weight(%)</th>
-                        <th>Target(%)</th>
+                        <th>CLASS</th>
+                        <th>WGT(%)</th>
+                        <th>TGT(%)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            Deferred Cap Gains
-                            <span class="note">Total Return Funds</span>
-                        </td>
-                        <td><input type="number" id="allocDcg" value="34" class="alloc-input"></td>
-                        <td><input type="number" id="rateDcg" value="8" step="0.1" class="rate-input"></td>
+                        <td>DEF_CG</td>
+                        <td><input type="number" id="allocDcg" value="20"></td>
+                        <td><input type="number" id="rateDcg" value="8.0" step="0.1"></td>
                     </tr>
                     <tr>
-                        <td>
-                            Realized Cap Gains
-                            <span class="note">Active Trading</span>
-                        </td>
-                        <td><input type="number" id="allocRcg" value="33" class="alloc-input"></td>
-                        <td><input type="number" id="rateRcg" value="10" step="0.1" class="rate-input"></td>
+                        <td>REAL_CG</td>
+                        <td><input type="number" id="allocRcg" value="40"></td>
+                        <td><input type="number" id="rateRcg" value="10.0" step="0.1"></td>
                     </tr>
                     <tr>
-                        <td>
-                            Fixed Income
-                            <span class="note">GICs, Bonds</span>
-                        </td>
-                        <td><input type="number" id="allocFi" value="33" class="alloc-input"></td>
-                        <td><input type="number" id="rateFi" value="4" step="0.1" class="rate-input"></td>
+                        <td>FIXED_INC</td>
+                        <td><input type="number" id="allocFi" value="40"></td>
+                        <td><input type="number" id="rateFi" value="4.0" step="0.1"></td>
                     </tr>
                 </tbody>
             </table>
-            <div id="alloc-warning">ERROR: Weights must sum to 100%. Current sum = <span id="alloc-total">100</span>%.</div>
+            <div id="alloc-warning">ERR: WGTS != 100% (SUM: <span id="alloc-total">100</span>%)</div>
+            
+            <button id="runBtn" style="width: 100%; padding: 10px; margin-top: 10px; font-weight: bold;">>> EXECUTE PROJECTION</button>
         </div>
 
-        <!-- RIGHT COLUMN: RESULTS -->
-        <div>
-            <h2>III. Output Summary</h2>
+        <!-- RIGHT PANEL: OUTPUT & LEDGER -->
+        <div class="panel">
+            <h2>[ SYS_OUT: RESULTS ]</h2>
             
-            <div class="results-box">
-                <h3>Final Net Cash to Estate</h3>
-                <p class="big-number" id="resNetEstate">$0</p>
-                <p>After all taxes at Life Expectancy (Age <span id="resAge">86</span>)</p>
+            <div class="results-summary">
+                <div class="stat-box">
+                    <span class="stat-label">TOTAL CAPITAL IN</span>
+                    <span class="stat-value" id="resContributed">$0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">GROSS PORTFOLIO</span>
+                    <span class="stat-value" id="resGross">$0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">TOTAL EST. TAXES</span>
+                    <span class="stat-value" id="resTaxes" style="color: var(--danger);">$0</span>
+                </div>
+                <div class="stat-box highlight">
+                    <span class="stat-label">NET CASH TO ESTATE (AGE <span id="resAge">86</span>)</span>
+                    <span class="stat-value" id="resNetEstate">$0</span>
+                </div>
             </div>
 
-            <div class="stat-grid">
-                <div class="stat-row">
-                    <div class="label">Total Capital Contributed</div>
-                    <div class="value" id="resContributed">$0</div>
-                </div>
-                <div class="stat-row">
-                    <div class="label">Gross Portfolio (Pre-Tax)</div>
-                    <div class="value" id="resGross">$0</div>
-                </div>
-                <div class="stat-row">
-                    <div class="label">Total Estate Taxes Paid</div>
-                    <div class="value" id="resTaxes">$0</div>
-                </div>
-                <div class="stat-row">
-                    <div class="label">Effective Estate Tax Rate</div>
-                    <div class="value" id="resTaxRate">0.0%</div>
-                </div>
+            <h2>[ SYS_OUT: LEDGER VIEW ]</h2>
+            <div class="ledger-container">
+                <table class="ledger-table" id="ledgerTable">
+                    <thead>
+                        <tr>
+                            <th>YR</th>
+                            <th>AGE</th>
+                            <th>DEPOSIT</th>
+                            <th>GROSS_PORT</th>
+                            <th>DEF_CG</th>
+                            <th>REAL_CG</th>
+                            <th>FIXED_INC</th>
+                            <th>CUM_CDA</th>
+                            <th>CUM_RDTOH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 10px; font-size: 11px; color: var(--muted); border-top: 1px dotted var(--muted); padding-top: 5px;" id="liquidationDetail">
+                <!-- Liquidation math goes here -->
             </div>
         </div>
     </div>
 
     <script>
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
+        }, 1000);
+
         // Fallback data
         const fallbackTaxData = [
             {Province: 'QC', Owner: 'Personal', TaxRate: 0.5331, Inclusion: 0.5, DividendE: 0.4011, DividendNE: 0.4870, RDTOH: 0},
@@ -367,7 +410,8 @@
         let taxData = [];
 
         // Formatting
-        const formatCurrency = (num) => new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(num);
+        const fCurr = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+        const fPct = (num) => (num * 100).toFixed(2) + '%';
         const parsePercent = (str) => parseFloat(str.replace('%', '')) / 100;
 
         async function init() {
@@ -376,10 +420,11 @@
                 if (!response.ok) throw new Error("Fetch failed");
                 const text = await response.text();
                 parseCSV(text);
-                document.getElementById('status').innerText = "[OK] settings.csv loaded successfully.";
+                document.getElementById('status').innerText = "> DATA LINK ESTABLISHED. SETTINGS LOADED.";
             } catch (err) {
                 taxData = fallbackTaxData;
-                document.getElementById('status').innerText = "[WARN] settings.csv not found. Using local fallback values.";
+                document.getElementById('status').innerText = "> WRN: OFFLINE MODE. LOCAL TAX TABLES IN USE.";
+                document.getElementById('status').style.color = "var(--danger)";
             }
             populateDropdowns();
             attachEventListeners();
@@ -423,10 +468,19 @@
                 opt.textContent = p;
                 provSelect.appendChild(opt);
             });
+            updateTaxDisplay();
         }
 
         function attachEventListeners() {
-            document.querySelectorAll('input, select').forEach(input => input.addEventListener('input', calculate));
+            document.getElementById('province').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
+            document.getElementById('owner').addEventListener('change', () => { updateTaxDisplay(); calculate(); });
+            
+            document.getElementById('runBtn').addEventListener('click', calculate);
+            
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('change', calculate);
+            });
+
             document.querySelectorAll('.preset-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
@@ -435,12 +489,32 @@
                 });
             });
         }
+        
+        function updateTaxDisplay() {
+            const prov = document.getElementById('province').value;
+            const owner = document.getElementById('owner').value;
+            const tData = getTaxRow(prov, owner);
+            if(!tData) return;
+            
+            const isCorp = owner === 'Corporate';
+            
+            let html = `
+                <div><span>TAX:</span> <span>${fPct(tData.TaxRate)}</span></div>
+                <div><span>INC:</span> <span>${fPct(tData.Inclusion)}</span></div>
+                <div><span>DIV_NE:</span> <span>${fPct(tData.DividendNE)}</span></div>
+            `;
+            if (isCorp) {
+                html += `<div><span>RDTOH:</span> <span>${fPct(tData.RDTOH)}</span></div>`;
+            }
+            
+            document.getElementById('taxDisplay').innerHTML = html;
+        }
 
         function applyPreset(preset) {
             if (preset === 'balanced') {
-                document.getElementById('allocDcg').value = 34;
-                document.getElementById('allocRcg').value = 33;
-                document.getElementById('allocFi').value = 33;
+                document.getElementById('allocDcg').value = 20;
+                document.getElementById('allocRcg').value = 40;
+                document.getElementById('allocFi').value = 40;
             } else if (preset === 'sp500') {
                 document.getElementById('allocDcg').value = 100;
                 document.getElementById('allocRcg').value = 0;
@@ -502,8 +576,12 @@
             let totalContributed = 0;
 
             const yearsToRun = le - age;
+            
+            const tbody = document.querySelector('#ledgerTable tbody');
+            tbody.innerHTML = '';
 
             for (let y = 1; y <= yearsToRun; y++) {
+                let currentAge = age + y;
                 let currentDep = (y <= numDeposits) ? deposit : 0;
                 totalContributed += currentDep;
 
@@ -511,11 +589,13 @@
                 let depRcg = currentDep * (allocRcg / 100);
                 let depFi = currentDep * (allocFi / 100);
 
+                // FI
                 let fiGrowth = (valFi + depFi) * rateFi;
                 let fiTax = fiGrowth * tr;
                 valFi += depFi + fiGrowth - fiTax;
                 if (isCorp) cumRDTOH += fiGrowth * rdtohRate;
 
+                // RCG
                 let rcgGrowth = (valRcg + depRcg) * rateRcg;
                 let rcgTaxable = rcgGrowth * inc;
                 let rcgTax = rcgTaxable * tr;
@@ -525,9 +605,27 @@
                     cumCDA += (rcgGrowth - rcgTaxable);
                 }
 
+                // DCG
                 let dcgGrowth = (valDcg + depDcg) * rateDcg;
                 valDcg += depDcg + dcgGrowth;
                 acbDcg += depDcg;
+                
+                let grossPort = valFi + valRcg + valDcg;
+                
+                // Add row
+                let trEl = document.createElement('tr');
+                trEl.innerHTML = `
+                    <td>${y}</td>
+                    <td>${currentAge}</td>
+                    <td>${fCurr(currentDep)}</td>
+                    <td>${fCurr(grossPort)}</td>
+                    <td>${fCurr(valDcg)}</td>
+                    <td>${fCurr(valRcg)}</td>
+                    <td>${fCurr(valFi)}</td>
+                    <td>${isCorp ? fCurr(cumCDA) : 'N/A'}</td>
+                    <td>${isCorp ? fCurr(cumRDTOH) : 'N/A'}</td>
+                `;
+                tbody.appendChild(trEl);
             }
 
             let grossPortfolio = valFi + valRcg + valDcg;
@@ -539,6 +637,8 @@
             
             let dcgTaxable = dcgUnrealized * inc;
             let dcgCorpTax = dcgTaxable * tr;
+            
+            let liqDetailHTML = `<strong>>> LIQUIDATION EVENT DETECTED AT AGE ${le}</strong><br>`;
 
             if (isCorp) {
                 cumRDTOH += dcgTaxable * rdtohRate;
@@ -557,19 +657,33 @@
                 
                 netToEstate = capDiv + nonEligDiv - personalTax;
                 finalEstateTax = dcgCorpTax + personalTax;
+                
+                liqDetailHTML += `
+                    FINAL CDA: ${fCurr(capDiv)} | FINAL RDTOH: ${fCurr(cumRDTOH)}<br>
+                    CORP TAX PAID: ${fCurr(dcgCorpTax)} | RDTOH REFUND: ${fCurr(refund)}<br>
+                    PERSONAL DIV NE: ${fCurr(nonEligDiv)} | PERSONAL TAX: ${fCurr(personalTax)}
+                `;
             } else {
                 let personalTax = dcgTaxable * tr;
                 netToEstate = grossPortfolio - personalTax;
                 finalEstateTax = personalTax;
+                
+                liqDetailHTML += `
+                    PERSONAL DEFERRED CAP GAIN REALIZED: ${fCurr(dcgUnrealized)}<br>
+                    PERSONAL TAX ON GAIN: ${fCurr(personalTax)}
+                `;
             }
 
-            document.getElementById('resNetEstate').innerText = formatCurrency(netToEstate);
-            document.getElementById('resContributed').innerText = formatCurrency(totalContributed);
-            document.getElementById('resGross').innerText = formatCurrency(grossPortfolio);
-            document.getElementById('resTaxes').innerText = formatCurrency(finalEstateTax);
+            document.getElementById('resNetEstate').innerText = fCurr(netToEstate);
+            document.getElementById('resContributed').innerText = fCurr(totalContributed);
+            document.getElementById('resGross').innerText = fCurr(grossPortfolio);
+            document.getElementById('resTaxes').innerText = fCurr(finalEstateTax);
             
-            let effectiveRate = dcgUnrealized > 0 ? (finalEstateTax / dcgUnrealized) * 100 : 0;
-            document.getElementById('resTaxRate').innerText = effectiveRate.toFixed(1) + '%';
+            document.getElementById('liquidationDetail').innerHTML = liqDetailHTML;
+            
+            // Scroll ledger to bottom automatically
+            const ledger = document.querySelector('.ledger-container');
+            ledger.scrollTop = ledger.scrollHeight;
         }
 
         window.onload = init;
