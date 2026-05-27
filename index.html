@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IBM Terminal Simulator</title>
+    <title>ARMFS Terminal</title>
     <style>
         :root {
             /* Classic IBM Blue and Yellow */
@@ -227,6 +227,7 @@
             padding: 6px 4px;
             text-align: right;
             color: var(--fg);
+            z-index: 10;
         }
 
         .ledger-table td {
@@ -257,17 +258,17 @@
             border: 1px dashed var(--border);
             padding: 5px;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             gap: 5px;
             background: var(--highlight);
         }
         
-        .tax-settings-display div {
+        .tax-settings-row {
             display: flex;
             justify-content: space-between;
         }
         
-        .tax-settings-display span:first-child {
+        .tax-settings-row span:first-child {
             color: var(--muted);
         }
     </style>
@@ -520,12 +521,12 @@
             const isCorp = owner === 'Corporate';
             
             let html = `
-                <div><span>TAX:</span> <span>${fPct(tData.TaxRate)}</span></div>
-                <div><span>INC:</span> <span>${fPct(tData.Inclusion)}</span></div>
-                <div><span>DIV_NE:</span> <span>${fPct(tData.DividendNE)}</span></div>
+                <div class="tax-settings-row"><span>TAX:</span> <span>${fPct(tData.TaxRate)}</span></div>
+                <div class="tax-settings-row"><span>INC:</span> <span>${fPct(tData.Inclusion)}</span></div>
+                <div class="tax-settings-row"><span>DIV_NE:</span> <span>${fPct(tData.DividendNE)}</span></div>
             `;
             if (isCorp) {
-                html += `<div><span>RDTOH:</span> <span>${fPct(tData.RDTOH)}</span></div>`;
+                html += `<div class="tax-settings-row"><span>RDTOH:</span> <span>${fPct(tData.RDTOH)}</span></div>`;
             }
             
             document.getElementById('taxDisplay').innerHTML = html;
